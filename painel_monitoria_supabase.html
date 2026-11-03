@@ -35,7 +35,7 @@ th{color:var(--mu);font-size:12px;text-transform:uppercase}tr.p td{background:va
 .cw{overflow-x:auto}
 .cal{display:grid;grid-template-columns:repeat(7,minmax(104px,1fr));min-width:790px;border-top:1px solid var(--bd);border-left:1px solid var(--bd)}
 .cal>div{border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);padding:7px;min-width:0;overflow-wrap:anywhere}
-.cal .h{display:flex;align-items:center;justify-content:center;min-height:30px;background:#4b4b4b!important;color:#fff!important;font-weight:700;font-size:12px;text-align:center;visibility:visible;opacity:1;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.cal .h{background:var(--pr);font-weight:700;font-size:12px;text-align:center}
 .cal .z{background:var(--bg)}
 .cl{background:var(--card);min-height:96px}.cl.dim{opacity:.3}.cl.fu{background:var(--bg)}
 .cl .n{font-size:20px;font-weight:700;line-height:1}.cl .w{font-size:10px;color:var(--mu);margin-bottom:5px}
@@ -226,8 +226,20 @@ function pdfCal(){
  const[y,m]=view(),W=297,H=210,mg=8,cw=(W-2*mg)/7,first=Date.UTC(y,m,1)/864e5,n=new Date(Date.UTC(y,m+1,0)).getUTCDate(),off=dt(first).getUTCDay();
  const head=()=>{doc.setFont('helvetica','bold');doc.setTextColor(0);doc.setFontSize(15);doc.text('CALENDÁRIO DE LEITURA E ATRIBUIÇÃO',W/2,mg+5,{align:'center'});
   doc.setFontSize(11);doc.text(MES[m]+' DE '+y,W/2,mg+11,{align:'center'});legend(doc,mg,mg+16);
-  const y0=mg+19;doc.setFillColor(75,75,75);doc.setDrawColor(75,75,75);doc.setLineWidth(.25);
-  ['DOMINGO','SEGUNDA','TERÇA','QUARTA','QUINTA','SEXTA','SÁBADO'].forEach((d,i)=>{doc.rect(mg+i*cw,y0,cw,7,'FD');doc.setFontSize(7.5);doc.setFont('helvetica','bold');doc.setTextColor(255,255,255);doc.text(d,mg+i*cw+cw/2,y0+4.7,{align:'center'})});
+  const y0=mg+19;
+  // Cabeçalho do PDF: desenha o preenchimento e a borda separadamente.
+  // Isso evita que o modo combinado FD do jsPDF produza faixas pretas
+  // ou esconda os nomes dos dias em alguns visualizadores/impressoras.
+  const dias=['DOMINGO','SEGUNDA','TERÇA','QUARTA','QUINTA','SEXTA','SÁBADO'];
+  dias.forEach((d,i)=>{
+   const hx=mg+i*cw;
+   // Cabeçalho cinza escuro com texto branco no PDF.
+   // Preenchimento e contorno são desenhados separadamente para evitar falhas de renderização.
+   doc.setFillColor(90,90,90);doc.rect(hx,y0,cw,7,'F');
+   doc.setDrawColor(70,70,70);doc.setLineWidth(.25);doc.rect(hx,y0,cw,7,'S');
+   doc.setFont('helvetica','bold');doc.setFontSize(7.2);doc.setTextColor(255,255,255);
+   doc.text(d,hx+cw/2,y0+4.65,{align:'center',baseline:'middle',maxWidth:cw-2});
+  });
   doc.setTextColor(0,0,0);return y0+7};
  const rows=[];
  for(let d=1;d<=n;d++){const t=first+d-1,pos=off+d-1,r=Math.floor(pos/7);(rows[r]=rows[r]||new Array(7).fill(null))[pos%7]=t}
@@ -238,7 +250,7 @@ function pdfCal(){
  let yy=head();
  rows.forEach(row=>{const cells=row.map(info),h=Math.max(24,...cells.map(c=>c?c.h:0));
   if(yy+h>H-10){doc.addPage();yy=head()}
-  cells.forEach((c,i)=>{const x=mg+i*cw;doc.setDrawColor(125,125,125);doc.setLineWidth(.25);
+  cells.forEach((c,i)=>{const x=mg+i*cw;doc.setDrawColor(125,125,125);doc.setFillColor(255,255,255);doc.setTextColor(0,0,0);doc.setLineWidth(.25);
    if(!c){doc.setFillColor(255,255,255);doc.rect(x,yy,cw,h,'FD');return}
    doc.setFillColor(255,255,255);doc.rect(x,yy,cw,h,'FD');
    doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0);doc.text(pad(dt(c.t).getUTCDate()),x+2,yy+6.5);
