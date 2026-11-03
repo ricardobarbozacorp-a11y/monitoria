@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Painel da Monitoria de Leitura</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#1b2330;--mu:#5d6878;--bd:#c9d0da;--ac:#0b5cab;--act:#fff;--ok:#16794a;--okb:#e3f4ea;--wr:#9a5b00;--wrb:#fff1d6;--er:#b3261e;--erb:#fde6e4;--pr:#eaf2fb;--ur:#0b5cab;--ru:#16794a;--rp:#a35a00;--fu:#8a94a3;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161c;--card:#1b222b;--tx:#e8ecf1;--mu:#9aa5b4;--bd:#34404e;--ac:#6db1ff;--act:#0b1320;--ok:#6fd6a0;--okb:#173325;--wr:#f0b45a;--wrb:#3a2b10;--er:#ff8a80;--erb:#3d1a18;--pr:#1c2a3b;--ur:#7db8ff;--ru:#6fd6a0;--rp:#f0b45a}}
+:root[data-theme="dark"]{--bg:#12161c;--card:#1b222b;--tx:#e8ecf1;--mu:#9aa5b4;--bd:#34404e;--ac:#6db1ff;--act:#0b1320;--ok:#6fd6a0;--okb:#173325;--wr:#f0b45a;--wrb:#3a2b10;--er:#ff8a80;--erb:#3d1a18;--pr:#1c2a3b;--ur:#7db8ff;--ru:#6fd6a0;--rp:#f0b45a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1200px;margin:0 auto;padding:16px 14px 40px}
+h1{font-size:21px;margin:0 0 10px}h2{font-size:17px;margin:22px 0 10px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tabs button{background:var(--card);color:var(--tx);border:1px solid var(--bd);font-size:13px}
+.tabs button.on{background:var(--ac);color:var(--act);border-color:var(--ac)}
+button{background:var(--ac);color:var(--act);border:0;border-radius:6px;padding:9px 14px;font:inherit;font-weight:600;cursor:pointer}
+button.sec{background:var(--card);color:var(--tx);border:1px solid var(--bd)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px}
+input,select{box-sizing:border-box;padding:8px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--tx);font:inherit}
+.names,.flt{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-bottom:10px}
+.names input{text-transform:uppercase;width:100%}.flt label{font-size:12px;color:var(--mu);display:block}.flt input,.flt select{width:100%}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.b{padding:6px 10px;border-radius:6px;font-size:13px;font-weight:600}
+.b.ok{background:var(--okb);color:var(--ok)}.b.wr{background:var(--wrb);color:var(--wr)}.b.er{background:var(--erb);color:var(--er)}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:520px}
+th,td{padding:7px 10px;border-bottom:1px solid var(--bd);text-align:left;font-size:14px}
+th{color:var(--mu);font-size:12px;text-transform:uppercase}tr.p td{background:var(--pr)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.card h3{margin:0 0 8px;font-size:16px}
+.st{display:flex;gap:14px;margin:8px 0;font-size:13px;color:var(--mu)}.st b{display:block;color:var(--tx);font-size:18px}
+.dt{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px solid var(--bd);font-size:14px}
+.tag{font-size:11px;background:var(--ac);color:var(--act);border-radius:4px;padding:1px 5px;margin-left:6px}
+.cw{overflow-x:auto}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(104px,1fr));min-width:790px;border-top:1px solid var(--bd);border-left:1px solid var(--bd)}
+.cal>div{border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);padding:7px;min-width:0;overflow-wrap:anywhere}
+.cal .h{display:flex;align-items:center;justify-content:center;min-height:30px;background:#4b4b4b!important;color:#fff!important;font-weight:700;font-size:12px;text-align:center;visibility:visible;opacity:1;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.cal .z{background:var(--bg)}
+.cl{background:var(--card);min-height:96px}.cl.dim{opacity:.3}.cl.fu{background:var(--bg)}
+.cl .n{font-size:20px;font-weight:700;line-height:1}.cl .w{font-size:10px;color:var(--mu);margin-bottom:5px}
+.cl .e{font-size:12px;border-left:3px solid;padding-left:5px;margin:2px 0}
+.e.u{border-color:var(--ur)}.e.r{border-color:var(--ru)}.e.p{border-color:var(--rp);font-weight:700}
+.cl .m{margin-top:6px;font-weight:700;font-size:13px;background:var(--pr);border-radius:4px;padding:3px 5px}
+.fu .f{font-size:11px;font-weight:700;color:var(--fu);margin-top:6px}
+.bn{padding:10px 12px;border-radius:8px;font-weight:700;margin-bottom:8px}.bn.lk{background:var(--erb);color:var(--er)}.bn.op{background:var(--okb);color:var(--ok)}
+#dl,#lg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:14px;z-index:50}#dl[hidden],#lg[hidden]{display:none}#dl .card,#lg .card{max-width:440px;width:100%}#dl textarea{width:100%;box-sizing:border-box;padding:8px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--tx);font:inherit}button:disabled{opacity:.45;cursor:not-allowed}
+/* Impressão: calendário legível em impressora preto e branco. */
+@media print{
+ @page{size:A4 landscape;margin:8mm}
+ html,body{background:#fff!important;color:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ body{font-size:10pt}
+ main{max-width:none;margin:0;padding:0}
+ #lgn,#aus,.tabs,#t-srt,#t-upl,#cb .card .flt,#prt,#pd,#opd,
+ #t-cal>h2:not(#ct),#t-cal>.lg{display:none!important}
+ #t-cal{display:block!important}
+ #t-cal>.card{display:none!important}
+ #ct{display:block!important;color:#000!important;margin:0 0 5mm!important}
+ .cw{overflow:visible!important;width:100%!important}
+ .cal{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;min-width:0!important;width:100%!important;border-color:#777!important}
+ .cal>div{min-width:0!important;overflow:visible!important;break-inside:avoid;page-break-inside:avoid;padding:5px!important;border-color:#777!important}
+ .cal .h{display:flex!important;visibility:visible!important;opacity:1!important;background:#4b4b4b!important;color:#fff!important;font-size:9pt!important;min-height:25px!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+ .cl,.cl.fu,.cal .z{background:#fff!important;color:#000!important}
+ .cl.dim{opacity:1!important}
+ .cl .n,.cl .w,.cl .e,.cl .m,.fu .f{color:#000!important}
+ .cl .m{background:#eee!important;border:1px solid #999!important}
+ .cl .e{border-left-color:#555!important}
+}
+.lg{font-size:12px;color:var(--mu);margin:8px 0}
+.drop{border:1px dashed var(--bd);border-radius:8px;padding:12px;margin-bottom:10px}
+#pd{margin:10px 0;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+</style></head><body>
+<main>
+<h1>Painel da Monitoria de Leitura <small style="font-size:11px;color:var(--mu)">v4</small></h1>
+<div style="display:flex;gap:10px;align-items:center;margin-bottom:10px"><button class="sec" id="lgn">Entrar (administrador)</button><span id="aus" class="lg"></span></div>
+<div class="tabs" id="tabs">
+<button data-t="cal" class="on">Calendário de leitura e atribuição</button>
+<button data-t="srt">Sorteio e distribuição</button>
+<button data-t="upl" id="tupl" hidden>Upload de calendários</button></div>
+
+<section id="t-cal">
+<h2 style="margin-top:0">CALENDÁRIO DE LEITURA E ATRIBUIÇÃO</h2><div id="cb"></div>
+<div class="card">
+<div class="flt">
+<div><label>Mês/Ano</label><input type="month" id="fm"></div>
+<div><label>Monitor</label><select id="fmon"></select></div>
+<div><label>Categoria</label><select id="fcat"><option value="">Todas</option><option value="u">Urbana</option><option value="r">Rural</option></select></div>
+<div><label>Pesquisar etapa</label><input id="fq" placeholder="ex.: 25" inputmode="numeric"></div>
+</div>
+<button id="prt">IMPRIMIR CALENDÁRIO</button>
+<div id="pd" hidden>
+<button id="pall">BAIXAR PDF — CALENDÁRIO COMPLETO</button>
+<span>ou</span><select id="pmon"></select>
+<button id="pone">BAIXAR PDF — CALENDÁRIO INDIVIDUAL</button>
+<div id="pm" class="lg" style="flex-basis:100%" role="status"></div></div>
+</div>
+<h2 id="ct" style="text-align:center"></h2>
+<div class="lg">Legenda: <b style="color:var(--ur)">▌Urbana</b> · <b style="color:var(--ru)">▌Rural</b> · <b style="color:var(--rp)">▌Rural prioritária</b></div>
+<div class="cw"><div class="cal" id="cal"></div></div>
+<h2>PDFs dos calendários originais</h2><div id="opd" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+</section>
+
+<section id="t-srt" hidden>
+<div class="card" id="lk"></div>
+<div class="card" style="margin-top:10px">
+<div class="names" id="names"></div>
+<div id="ctl" style="display:flex;flex-wrap:wrap;gap:8px"><button id="go">REALIZAR SORTEIO</button><button id="conf" class="sec">CONFIRMAR E TRAVAR CALENDÁRIO</button><button id="unl" class="sec" hidden>DESBLOQUEAR SORTEIO DO MÊS</button></div>
+<div class="lg" id="lm" role="status"></div>
+<div class="badges" id="val"></div></div>
+<h2>Tabela geral</h2>
+<div class="card tw"><table><thead><tr><th>Data</th><th>Etapas</th><th>Categoria</th><th>Monitor</th></tr></thead><tbody id="tb"></tbody></table></div>
+<h2>Quadros individuais</h2><div class="grid" id="cards"></div>
+<div id="hsec"><h2>Histórico e auditoria</h2><div class="card tw"><table><thead><tr><th>Competência</th><th>Status</th><th>Data</th><th>Sorteio</th><th>Justificativa</th></tr></thead><tbody id="hist"></tbody></table></div></div>
+<p class="lg">Carga = etapas + 2 por cadastro rural prioritário.</p>
+</section>
+
+<section id="t-upl" hidden>
+<div class="card">
+<div class="drop"><b>CALENDÁRIO RURAL — PDF</b><br><input type="file" id="fr" accept="application/pdf"> <small id="nr"></small></div>
+<div class="drop"><b>CALENDÁRIO URBANO — PDF</b><br><input type="file" id="fu" accept="application/pdf"> <small id="nu"></small></div>
+<button id="proc">Processar PDFs</button>
+<p class="lg" id="um">Dados atuais: calendários de novembro de 2026 (padrão). Nenhum sorteio é feito após o upload.</p>
+</div>
+<div id="prev"></div>
+</section>
+</main>
+
+<div id="lg" hidden><div class="card"><b>Acesso administrativo</b><div style="display:grid;gap:8px;margin:8px 0"><input id="le" type="email" autocomplete="username" placeholder="E-mail"><input id="lp" type="password" autocomplete="current-password" placeholder="Senha"></div><div style="display:flex;gap:8px"><button id="lok">Entrar</button><button class="sec" id="lcx">Cancelar</button></div><div class="lg" id="lmsg" role="status"></div>
+<div id="cad" style="border-top:1px solid var(--bd);margin-top:10px;padding-top:10px"><button class="sec" id="cad1">Primeiro acesso: cadastrar administrador</button><div id="cadf" hidden style="display:none;gap:8px;margin-top:8px"><input id="cn" placeholder="Nome" value="Ricardo Barboza"><input id="ce" type="email" placeholder="E-mail do administrador"><input id="cp" type="password" autocomplete="new-password" placeholder="Senha (mín. 8 caracteres)"><input id="cc" type="password" placeholder="Código de configuração"><button id="cad2">Cadastrar administrador</button></div></div></div></div>
+<div id="dl" hidden><div class="card"><b>DESBLOQUEAR SORTEIO DO MÊS</b><p id="dlt" class="lg"></p><textarea id="dlj" rows="3" placeholder="Justificativa (obrigatória)"></textarea><div style="display:flex;gap:8px;margin-top:8px"><button id="dly">Confirmar desbloqueio</button><button class="sec" id="dln">Cancelar</button></div><div class="lg" id="dlm" role="status"></div></div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const pad=n=>String(n).padStart(2,'0'),$=i=>document.getElementById(i);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const T=d=>Date.UTC(2026,10,d)/864e5,mk=o=>Object.fromEntries(Object.entries(o).map(([k,v])=>[k,T(v)]));
+let DB={y:2026,m:10,
+U:mk({1:3,2:4,3:5,31:6,4:9,5:10,6:12,7:13,8:14,9:16,10:17,11:18,12:19,13:21,14:23,15:24,16:25,17:26,18:27}),
+R:mk({32:3,33:4,34:5,35:9,36:10,37:12,38:13,39:14,40:16,41:17,42:18,43:19,44:21,45:23,46:24,47:25,48:26,49:27}),
+P:mk({25:3,26:9,27:13,28:17,29:21,30:25})};
+const MES=['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'];
+const WD=['DOMINGO','SEGUNDA-FEIRA','TERÇA-FEIRA','QUARTA-FEIRA','QUINTA-FEIRA','SEXTA-FEIRA','SÁBADO'];
+const KL={u:'Urbana',p:'Rural prioritária',r:'Rural'},KO={u:0,p:1,r:2};
+const dt=t=>new Date(t*864e5),fd=t=>{const x=dt(t);return pad(x.getUTCDate())+'/'+pad(x.getUTCMonth()+1)+'/'+x.getUTCFullYear()};
+let names=['HITALO BRUNO','RICARDO BARBOZA','GABRIELA LOPES','JAIRO MOURA','VITOR JUAN'],G={},DATES=[],state=null,who={};
+const sts=x=>x.e.slice().sort((a,b)=>KO[x.k[a]]-KO[x.k[b]]||a-b);
+function build(){G={};const add=(t,c,k)=>{(G[t]=G[t]||{t,e:[],k:{},p:null}).e.push(+c);G[t].k[c]=k};
+ for(const c in DB.U)add(DB.U[c],c,'u');for(const c in DB.R)add(DB.R[c],c,'r');
+ for(const c in DB.P){add(DB.P[c],c,'p');G[DB.P[c]].p=+c}
+ DATES=Object.values(G).sort((a,b)=>a.t-b.t);DATES.forEach(x=>x.e.sort((a,b)=>a-b))}
+const load=ds=>ds.reduce((s,x)=>s+x.e.length+(x.p?2:0),0);
+const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function draw(){
+ if(lockOf(YM()))return;
+ state=null;const codes=Object.keys(DB.P).map(Number).sort((a,b)=>a-b);
+ if(codes.length!==6)return;
+ const order=shuf([0,1,2,3,4,Math.floor(Math.random()*5)]),own=[[],[],[],[],[]];
+ codes.forEach((c,i)=>own[order[i]].push(G[DB.P[c]]));
+ const rest=DATES.filter(x=>!x.p),cap=Math.ceil(DATES.length/5);let best=null,bs=1e9;
+ for(let k=0;k<400;k++){
+  const a=own.map(x=>x.slice());let nodes=0;
+  const rec=i=>{if(i===rest.length)return true;if(++nodes>4000)return false;const x=rest[i];
+   const c=[0,1,2,3,4].filter(m=>a[m].length<cap&&a[m].every(y=>Math.abs(y.t-x.t)>=3));
+   c.sort((m,n)=>(a[m].length*100+load(a[m])+Math.random()*6)-(a[n].length*100+load(a[n])+Math.random()*6));
+   for(const m of c){a[m].push(x);if(rec(i+1))return true;a[m].pop()}return false};
+  if(!rec(0))continue;
+  const cs=a.map(x=>x.length),ls=a.map(load),s=(Math.max(...cs)-Math.min(...cs))*1000+(Math.max(...ls)-Math.min(...ls))+Math.random();
+  if(s<bs){bs=s;best=a}}
+ state=best}
+function validate(){
+ if(!state)return[['er','Sem solução viável com as restrições']];
+ const o=[];let mg=99;
+ state.forEach(a=>{const d=a.map(x=>x.t).sort((x,y)=>x-y);for(let i=1;i<d.length;i++)mg=Math.min(mg,d[i]-d[i-1])});
+ o.push(mg>=3?['ok','Intervalo válido (mínimo '+mg+' dias)']:['er','Conflito de intervalo ('+mg+' dias)']);
+ const seen={};state.forEach(a=>a.forEach(x=>x.e.forEach(c=>seen[c]=(seen[c]||0)+1)));
+ const tot=Object.keys(DB.U).length+Object.keys(DB.R).length+6,bad=Object.values(seen).filter(v=>v!==1).length;
+ o.push(!bad&&Object.keys(seen).length===tot?['ok','Agrupamentos íntegros (nenhuma etapa dividida)']:['er','Agrupamento dividido incorretamente']);
+ const cs=state.map(x=>x.length),ls=state.map(load),sc=Math.max(...cs)-Math.min(...cs),sl=Math.max(...ls)-Math.min(...ls);
+ o.push(sc<=1?['ok','Cadastros equilibrados ('+cs.join('/')+')']:['wr','Desequilíbrio de cadastros ('+cs.join('/')+')']);
+ o.push(sl<=6?['ok','Carga equilibrada (diferença '+sl+')']:['wr','Desequilíbrio de carga (diferença '+sl+')']);
+ const pr=state.map(a=>a.filter(x=>x.p).length);
+ o.push(Math.max(...pr)<=2&&Math.min(...pr)>=1?['ok','Rurais prioritários: '+pr.join('/')]:['er','Distribuição rural inválida']);
+ return o}
+const fe=e=>e.map(pad).join(', ');
+const cat=x=>x.p?'Rural prioritária + urbana + rural':(Object.values(x.k).includes('u')&&Object.values(x.k).includes('r')?'Urbana + rural':Object.values(x.k).includes('u')?'Urbana (sem rural)':'Rural (sem urbana)');
+function renderSrt(){
+ $('val').innerHTML=validate().map(v=>'<span class="b '+v[0]+'">'+esc(v[1])+'</span>').join('');
+ $('tb').innerHTML=DATES.map(x=>'<tr class="'+(x.p?'p':'')+'"><td>'+fd(x.t)+' ('+WD[dt(x.t).getUTCDay()].slice(0,3).toLowerCase()+')</td><td>'+fe(x.e)+'</td><td>'+cat(x)+'</td><td>'+mc(x)+'</td></tr>').join('');
+ $('cards').innerHTML=state?state.map((a,m)=>{const s=a.slice().sort((x,y)=>x.t-y.t);
+  return '<div class="card"><h3>'+esc(names[m])+'</h3><div class="st"><span><b>'+s.length+'</b>cadastros</span><span><b>'+s.reduce((n,x)=>n+x.e.length,0)+'</b>etapas</span><span><b>'+s.filter(x=>x.p).length+'</b>rurais prior.</span><span><b>'+load(s)+'</b>carga</span></div>'+
+  s.map(x=>'<div class="dt"><span>'+fd(x.t)+(x.p?'<span class="tag">rural '+x.p+'</span>':'')+'</span><span>'+fe(x.e)+'</span></div>').join('')+'</div>'}).join(''):''}
+function calHTML(y,m,f,pr){
+ const first=Date.UTC(y,m,1)/864e5,n=new Date(Date.UTC(y,m+1,0)).getUTCDate(),off=dt(first).getUTCDay();
+ let h=['DOMINGO','SEGUNDA','TERÇA','QUARTA','QUINTA','SEXTA','SÁBADO'].map(d=>'<div class="h">'+d+'</div>').join('');
+ for(let i=0;i<off;i++)h+='<div class="z"></div>';
+ for(let d=1;d<=n;d++){const t=first+d-1,x=G[t],wd=WD[dt(t).getUTCDay()];
+  if(!x){h+='<div class="cl fu"><div class="n">'+pad(d)+'</div><div class="w">'+wd+'</div><div class="f">FURO DE CALENDÁRIO</div></div>';continue}
+  const mon=who[t],all=sts(x),vis=all.filter(c=>!f.cat||(f.cat==='u'?x.k[c]==='u':x.k[c]!=='u'));
+  const ok=(f.mon<0||mon===f.mon)&&vis.length&&(!f.q||all.some(c=>pad(c).includes(f.q)||String(c).includes(f.q)));
+  h+='<div class="cl'+(ok?'':' dim')+'"><div class="n">'+pad(d)+'</div><div class="w">'+wd+'</div>'+
+  vis.map(c=>'<div class="e '+x.k[c]+'">'+KL[x.k[c]]+': '+pad(c)+'</div>').join('')+
+  '<div class="m">MONITOR: '+(mon!=null?esc(names[mon]):'a definir')+'</div></div>'}
+ return '<div class="cal">'+h+'</div>'}
+function filt(){return{mon:+$('fmon').value,cat:$('fcat').value,q:$('fq').value.trim()}}
+function view(){const v=$('fm').value.split('-');return[+v[0],v[1]-1]}
+function renderCal(){const[y,m]=view();$('ct').textContent=MES[m]+' DE '+y;$('cal').outerHTML=calHTML(y,m,filt()).replace('class="cal"','class="cal" id="cal"')}
+function render(){
+ who={};if(state)state.forEach((a,m)=>a.forEach(x=>who[x.t]=m));
+ const opt=(all)=>(all?'<option value="-1">TODOS OS MONITORES</option>':'')+names.map((n,i)=>'<option value="'+i+'">'+esc(n)+'</option>').join('');
+ const fm=$('fmon').value,pm=$('pmon').value;$('fmon').innerHTML=opt(1);$('pmon').innerHTML=opt(0);
+ if(fm)$('fmon').value=fm;if(pm)$('pmon').value=pm;
+ renderCal();renderSrt();renderLock();renderPdfs();bindSel()}
+function andJoin(a){return a.length>1?a.slice(0,-1).join(', ')+' e '+a[a.length-1]:a[0]}
+const CC={u:[75,75,75],r:[75,75,75],p:[0,0,0]};
+const asc=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,'');
+const mesCap=m=>MES[m][0]+MES[m].slice(1).toLowerCase();
+const msg=t=>$('pm').textContent=t;
+function saveDoc(doc,fn){doc.save(fn);msg('PDF gerado: '+fn)}
+function newDoc(o){const J=window.jspdf&&window.jspdf.jsPDF;if(!J){msg('Biblioteca de PDF não carregou. Recarregue a página.');return null}return new J({orientation:o,unit:'mm',format:'a4'})}
+const stamp=doc=>{const n=doc.getNumberOfPages();for(let i=1;i<=n;i++){doc.setPage(i);doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(90);
+ const w=doc.internal.pageSize.getWidth(),h=doc.internal.pageSize.getHeight();doc.text('Gerado em '+new Date().toLocaleDateString('pt-BR')+' · Página '+i+' de '+n,w-8,h-4,{align:'right'})}};
+function legend(doc,x,y){[['u','Urbana'],['r','Rural'],['p','Rural prioritária']].forEach(([k,l])=>{doc.setFillColor(...CC[k]);doc.rect(x,y-2.4,2.6,2.6,'F');doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(0);doc.text(l,x+3.8,y);x+=doc.getTextWidth(l)+10})}
+function pdfCal(){
+ const doc=newDoc('landscape');if(!doc)return null;
+ const[y,m]=view(),W=297,H=210,mg=8,cw=(W-2*mg)/7,first=Date.UTC(y,m,1)/864e5,n=new Date(Date.UTC(y,m+1,0)).getUTCDate(),off=dt(first).getUTCDay();
+ const head=()=>{doc.setFont('helvetica','bold');doc.setTextColor(0);doc.setFontSize(15);doc.text('CALENDÁRIO DE LEITURA E ATRIBUIÇÃO',W/2,mg+5,{align:'center'});
+  doc.setFontSize(11);doc.text(MES[m]+' DE '+y,W/2,mg+11,{align:'center'});legend(doc,mg,mg+16);
+  const y0=mg+19;doc.setFillColor(75,75,75);doc.setDrawColor(75,75,75);doc.setLineWidth(.25);
+  ['DOMINGO','SEGUNDA','TERÇA','QUARTA','QUINTA','SEXTA','SÁBADO'].forEach((d,i)=>{doc.rect(mg+i*cw,y0,cw,7,'FD');doc.setFontSize(7.5);doc.setFont('helvetica','bold');doc.setTextColor(255,255,255);doc.text(d,mg+i*cw+cw/2,y0+4.7,{align:'center'})});
+  doc.setTextColor(0,0,0);return y0+7};
+ const rows=[];
+ for(let d=1;d<=n;d++){const t=first+d-1,pos=off+d-1,r=Math.floor(pos/7);(rows[r]=rows[r]||new Array(7).fill(null))[pos%7]=t}
+ for(let r=0;r<rows.length;r++)for(let c=0;c<7;c++)if(rows[r][c]===undefined)rows[r][c]=null;
+ const info=t=>{if(t==null)return null;const x=G[t],st=x?sts(x):[],mon=x?(who[t]!=null?names[who[t]]:'a definir'):'';
+  doc.setFont('helvetica','bold');doc.setFontSize(7);const ml=x?doc.splitTextToSize('MONITOR: '+mon,cw-5):[];
+  return{t,x,st,ml,h:x?14+st.length*3.8+1+ml.length*3.3+3.5:19}};
+ let yy=head();
+ rows.forEach(row=>{const cells=row.map(info),h=Math.max(24,...cells.map(c=>c?c.h:0));
+  if(yy+h>H-10){doc.addPage();yy=head()}
+  cells.forEach((c,i)=>{const x=mg+i*cw;doc.setDrawColor(125,125,125);doc.setLineWidth(.25);
+   if(!c){doc.setFillColor(255,255,255);doc.rect(x,yy,cw,h,'FD');return}
+   doc.setFillColor(255,255,255);doc.rect(x,yy,cw,h,'FD');
+   doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0);doc.text(pad(dt(c.t).getUTCDate()),x+2,yy+6.5);
+   doc.setFont('helvetica','normal');doc.setFontSize(6);doc.setTextColor(0,0,0);doc.text(WD[dt(c.t).getUTCDay()],x+2,yy+10);
+   if(!c.x){doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(0,0,0);doc.text('FURO DE CALENDÁRIO',x+2,yy+15.5);return}
+   let ty=yy+14.5;
+   c.st.forEach(n=>{const k=c.x.k[n];doc.setFillColor(...CC[k]);doc.rect(x+2,ty-2.6,.9,3.2,'F');doc.setTextColor(0);doc.setFont('helvetica',k==='p'?'bold':'normal');doc.setFontSize(7);doc.text(KL[k]+': '+pad(n),x+3.8,ty);ty+=3.8});
+   ty+=0.5;const bh=c.ml.length*3.3+1.8;doc.setFillColor(238,238,238);doc.rect(x+1.5,ty-2.4,cw-3,bh,'F');
+   doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(0);c.ml.forEach((l,j)=>doc.text(l,x+2.5,ty+j*3.3))});
+  yy+=h});
+ stamp(doc);return doc}
+function pdfOne(i){
+ const doc=newDoc('portrait');if(!doc)return null;
+ const[y,m]=view(),W=210,H=297,mg=14,ds=state?state[i].filter(x=>dt(x.t).getUTCMonth()===m&&dt(x.t).getUTCFullYear()===y).sort((a,b)=>a.t-b.t):[];
+ doc.setFont('helvetica','bold');doc.setTextColor(0);doc.setFontSize(20);doc.text('CALENDÁRIO DE CADASTRO',W/2,mg+8,{align:'center'});
+ doc.setFontSize(10);doc.text('MONITOR',W/2,mg+17,{align:'center'});doc.setFontSize(24);doc.text(names[i].toUpperCase(),W/2,mg+27,{align:'center',maxWidth:W-2*mg});
+ doc.setFontSize(13);doc.text(MES[m]+' DE '+y,W/2,mg+35,{align:'center'});legend(doc,mg,mg+43);
+ doc.setLineWidth(.5);doc.line(mg,mg+46,W-mg,mg+46);let yy=mg+52;
+ if(!ds.length){doc.setFont('helvetica','normal');doc.setFontSize(12);doc.text(state?'Sem responsabilidades neste mês.':'Distribuição ainda não realizada.',mg,yy+6)}
+ ds.forEach(x=>{const st=sts(x),h=Math.max(20,10+st.length*7);
+  if(yy+h>H-14){doc.addPage();yy=mg}
+  doc.setDrawColor(125,125,125);doc.setLineWidth(.3);doc.rect(mg,yy,W-2*mg,h);doc.setFillColor(245,245,245);doc.rect(mg,yy,52,h,'FD');
+  doc.setFont('helvetica','bold');doc.setFontSize(15);doc.setTextColor(0);doc.text(fd(x.t),mg+3,yy+9);
+  doc.setFontSize(10);doc.text(WD[dt(x.t).getUTCDay()],mg+3,yy+15);
+  let ty=yy+8;doc.setFontSize(12);
+  st.forEach(n=>{const k=x.k[n];doc.setFillColor(...CC[k]);doc.rect(mg+57,ty-3.4,1.6,4.6,'F');doc.setFont('helvetica',k==='p'?'bold':'normal');doc.text(KL[k]+': '+pad(n),mg+61,ty);ty+=7});
+  yy+=h+4});
+ if(ds.length){doc.setFont('helvetica','bold');doc.setFontSize(11);if(yy+10>H-14){doc.addPage();yy=mg}
+  doc.text('Total: '+ds.length+' cadastros · '+ds.reduce((a,x)=>a+x.e.length,0)+' etapas',mg,yy+6)}
+ stamp(doc);return doc}
+// Supabase
+const SB_URL='https://veayywrdicygoewrollq.supabase.co',SB_KEY='sb_publishable_qKZ5uBdt031oq8bsEdKXYQ_zZKt10Es';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+let CP={},LKI={},PD=[],HIST=[],isAdm=false,drawId=null;
+const YM=()=>DB.y+'-'+pad(DB.m+1),ymL=ym=>{const p=ym.split('-');return MES[+p[1]-1]+'/'+p[0]};
+const when=a=>new Date(a).toLocaleString('pt-BR'),dstr=t=>dt(t).toISOString().slice(0,10);
+const pt=d=>{const[a,b,c]=d.split('-').map(Number);return Date.UTC(a,b-1,c)/864e5};
+const lockOf=ym=>CP[ym]&&CP[ym].status==='BLOQUEADO'?Object.assign({ym},LKI[ym]||{}):null;
+const mc=x=>who[x.t]==null?'—':(isAdm&&state&&!lockOf(YM()))?'<select data-t="'+x.t+'">'+names.map((n,i)=>'<option value="'+i+'"'+(i===who[x.t]?' selected':'')+'>'+esc(n)+'</option>').join('')+'</select>':'<b>'+esc(names[who[x.t]])+'</b>';
+function bindSel(){document.querySelectorAll('#tb select').forEach(s=>s.onchange=()=>{const t=+s.dataset.t,i=who[t],j=+s.value,x=G[t];if(i==null||i===j)return;state[i]=state[i].filter(y=>y!==x);state[j].push(x);render()})}
+async function loadMonth(ym){
+ const[y,mm]=ym.split('-').map(Number);$('fm').value=ym;
+ const[cp,et,pd]=await Promise.all([sb.from('competencias').select('*').eq('ym',ym).maybeSingle(),sb.from('calendario_etapas').select('tipo,etapa,data').eq('ym',ym),sb.from('pdfs').select('tipo,nome_original').eq('ym',ym)]);
+ CP[ym]=cp.data||undefined;PD=pd.data||[];
+ const U={},R={},P={};(et.data||[]).forEach(r=>(r.tipo==='URBANA'?U:R)[r.etapa]=pt(r.data));
+ Object.keys(R).map(Number).sort((a,b)=>a-b).filter((n,i)=>i%3===0&&i<18).forEach((n,i)=>P[25+i]=R[n]);
+ DB={y,m:mm-1,U,R,P};build();state=null;drawId=null;LKI[ym]=null;
+ if(lockOf(ym)){const s=await sb.from('sorteios').select('id,confirmado_em').eq('ym',ym).eq('status','CONFIRMADO').maybeSingle();
+  if(s.data){const at=await sb.from('atribuicoes').select('data,monitor_id').eq('sorteio_id',s.data.id);
+   LKI[ym]={drawId:'SORT-'+s.data.id.slice(0,8).toUpperCase(),at:s.data.confirmado_em};state=[[],[],[],[],[]];
+   (at.data||[]).forEach(r=>{const g=G[pt(r.data)];if(g)state[r.monitor_id-1].push(g)})}}
+ render()}
+async function loadHist(){const h=await sb.from('auditoria').select('*').order('criado_em',{ascending:false}).limit(100);HIST=h.data||[];render()}
+async function checkAdmin(){
+  const { data: { session }, error: sessionError } = await sb.auth.getSession();
+  isAdm = false;
+  let nome = '';
+
+  if (sessionError) {
+    console.error('Erro ao recuperar sessão:', sessionError);
+  } else if (session) {
+    // Valida pela função SECURITY DEFINER, sem depender do SELECT em profiles.
+    const adminCheck = await sb.rpc('is_admin');
+
+    if (adminCheck.error) {
+      console.error('Erro ao verificar administrador:', adminCheck.error);
+      $('lmsg').textContent = 'Não foi possível verificar a permissão administrativa: ' + adminCheck.error.message;
+    } else if (adminCheck.data === true) {
+      isAdm = true;
+
+      // O nome é informativo; falha ao carregar o nome não revoga o acesso.
+      const profile = await sb.from('profiles')
+        .select('nome')
+        .eq('id', session.user.id)
+        .maybeSingle();
+
+      nome = profile.data?.nome || session.user.email || 'ADMIN';
+      if (profile.error) {
+        console.warn('Não foi possível carregar o nome do perfil:', profile.error);
+      }
+    } else {
+      await sb.auth.signOut();
+      $('lmsg').textContent = 'A sessão foi autenticada, mas o banco não reconheceu este usuário como administrador.';
+    }
+  }
+
+  $('tupl').hidden = !isAdm;
+  $('lgn').textContent = isAdm ? 'Sair' : 'Entrar (administrador)';
+  $('aus').textContent = isAdm ? 'ADMIN: ' + nome : '';
+
+  if (!isAdm) {
+    HIST = [];
+    if (document.querySelector('#tabs .on').dataset.t === 'upl') {
+      document.querySelector('[data-t=cal]').click();
+    }
+  }
+}
+$('lgn').onclick=async()=>{if(isAdm){await sb.auth.signOut();await checkAdmin();await loadMonth(YM())}else{$('lmsg').textContent='';$('lg').hidden=false}};
+$('lcx').onclick=()=>$('lg').hidden=true;
+$('lok').onclick=async()=>{const r=await sb.auth.signInWithPassword({email:$('le').value.trim(),password:$('lp').value});
+ if(r.error){$('lmsg').textContent='E-mail ou senha inválidos.';return}
+ await checkAdmin();if(!isAdm){$('lmsg').textContent='Acesso restrito ao administrador.';return}
+ $('lp').value='';$('lg').hidden=true;await loadHist();await loadMonth(YM())};
+function renderPdfs(){$('opd').innerHTML=PD.length?PD.map(p=>'<button class="sec" data-tp="'+p.tipo+'">Baixar PDF original — '+(p.tipo==='RURAL'?'Rural':'Urbano')+'</button>').join(''):'<span class="lg">Nenhum PDF original enviado para este mês.</span>';
+ document.querySelectorAll('#opd button').forEach(b=>b.onclick=async()=>{try{const r=await fetch(SB_URL+'/functions/v1/pdf-link',{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY},body:JSON.stringify({ym:YM(),tipo:b.dataset.tp})}),j=await r.json();
+  if(!j.url)throw 0;const a=document.createElement('a');a.href=j.url;a.click()}catch(e){alert('Não foi possível gerar o link do PDF.')}})}
+function renderLock(){
+ const c=lockOf(YM()),lk=!!c,bad=state&&validate().some(v=>v[0]==='er');
+ $('ctl').hidden=!isAdm;$('hsec').hidden=!isAdm;
+ $('go').disabled=lk||!DATES.length;$('conf').disabled=lk||!state||bad;$('conf').hidden=lk;$('unl').hidden=!lk;
+ [...$('names').children].forEach(e=>e.disabled=true);
+ const bn=!DATES.length?'<div class="bn op">Sem calendário importado para '+ymL(YM())+'.</div>':lk?'<div class="bn lk">CALENDÁRIO BLOQUEADO — DISTRIBUIÇÃO MENSAL JÁ CONFIRMADA.</div>':'<div class="bn op">ABERTO — '+ymL(YM())+'</div>';
+ $('cb').innerHTML=bn;
+ $('lk').innerHTML=bn+'<div>Competência: <b>'+ymL(YM())+'</b>'+(lk?(c.drawId?' · Sorteio <b>'+esc(c.drawId)+'</b>':'')+(c.at?' · Confirmado em '+when(c.at):''):(isAdm?(state?' · Resultado pendente: confira e confirme.':' · Realize o sorteio.'):' · Distribuição ainda não confirmada.'))+'</div>';
+ $('hist').innerHTML=HIST.map(x=>'<tr><td>'+ymL(x.ym)+'</td><td><b>'+(x.acao==='CONFIRMADO'?'BLOQUEADO':'DESBLOQUEADO')+'</b></td><td>'+when(x.criado_em)+'</td><td>'+(x.sorteio_id?esc('SORT-'+x.sorteio_id.slice(0,8).toUpperCase()):'—')+'</td><td>'+esc(x.justificativa||'—')+'</td></tr>').join('')||'<tr><td colspan="5">Nenhum registro.</td></tr>'}
+$('conf').onclick=async()=>{
+ const lm=t=>$('lm').textContent=t,ym=YM();
+ if(!isAdm||!state||lockOf(ym))return;
+ if(validate().some(v=>v[0]==='er')){lm('Distribuição inválida: não pode ser confirmada.');return}
+ lm('Confirmando…');
+ const s=await sb.from('sorteios').insert({ym,status:'RASCUNHO'}).select('id').single();
+ if(s.error){lm('Erro: '+s.error.message);return}
+ const rows=[];state.forEach((a,i)=>a.forEach(x=>rows.push({sorteio_id:s.data.id,data:dstr(x.t),monitor_id:i+1,etapas:x.e})));
+ let e=(await sb.from('atribuicoes').insert(rows)).error;
+ if(!e)e=(await sb.rpc('confirmar_sorteio',{p_sorteio:s.data.id})).error;
+ if(e){await sb.from('sorteios').delete().eq('id',s.data.id);lm('Não confirmado: '+e.message);return}
+ await loadMonth(ym);await loadHist();lm('Distribuição confirmada e calendário bloqueado.')};
+$('unl').onclick=()=>{if(!isAdm||!lockOf(YM()))return;$('dlt').textContent='Isto libera um novo sorteio para '+ymL(YM())+'. A distribuição atual fica apenas no histórico e será preciso novo sorteio e nova confirmação.';$('dlj').value='';$('dlm').textContent='';$('dl').hidden=false};
+$('dln').onclick=()=>$('dl').hidden=true;
+$('dly').onclick=async()=>{const j=$('dlj').value.trim();if(!isAdm)return;
+ if(j.length<5){$('dlm').textContent='Informe a justificativa (mínimo 5 caracteres).';return}
+ const r=await sb.rpc('desbloquear_competencia',{p_ym:YM(),p_justificativa:j});
+ if(r.error){$('dlm').textContent='Não foi possível desbloquear: '+r.error.message;return}
+ $('dl').hidden=true;await loadMonth(YM());await loadHist();$('lm').textContent='Sorteio liberado. Realize novo sorteio e confirme.'};
+async function aplicar(r,u){
+ const ym=u.y+'-'+pad(u.m+1),um=t=>$('um').textContent=t,fail=e=>{um('Erro ao salvar: '+e.message);return true};
+ if(!isAdm)return;
+ await loadMonth(ym);
+ if(lockOf(ym)){um('Mês bloqueado: importação ignorada. Distribuição confirmada mantida.');$('prev').innerHTML='';return}
+ um('Salvando…');
+ let x=await sb.from('competencias').upsert({ym,status:'ABERTO'},{onConflict:'ym',ignoreDuplicates:true});if(x.error&&fail(x.error))return;
+ x=await sb.from('sorteios').delete().eq('ym',ym).eq('status','RASCUNHO');if(x.error&&fail(x.error))return;
+ x=await sb.from('calendario_etapas').delete().eq('ym',ym);if(x.error&&fail(x.error))return;
+ const rows=u.etapas.map(e=>({ym,tipo:'URBANA',etapa:e.n,data:dstr(e.t)})).concat(r.etapas.map(e=>({ym,tipo:'RURAL',etapa:e.n,data:dstr(e.t)})));
+ x=await sb.from('calendario_etapas').insert(rows);if(x.error&&fail(x.error))return;
+ for(const[tipo,id,file]of[['RURAL','fr',$('fr').files[0]],['URBANA','fu',$('fu').files[0]]]){if(!file)continue;
+  const path=ym+'/'+tipo.toLowerCase()+'.pdf';
+  x=await sb.storage.from('calendarios').upload(path,file,{upsert:true,contentType:'application/pdf'});if(x.error&&fail(x.error))return;
+  x=await sb.from('pdfs').upsert({ym,tipo,storage_path:path,nome_original:file.name},{onConflict:'ym,tipo'});if(x.error&&fail(x.error))return}
+ await loadMonth(ym);$('prev').innerHTML='';um('Dados salvos. Vá à aba Sorteio e distribuição para sortear.')}
+const CF=async b=>{const r=await fetch(SB_URL+'/functions/v1/criar-admin',{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY},body:JSON.stringify(b)});return r.json()};
+$('cad1').onclick=()=>{const f=$('cadf');$('lmsg').textContent='';f.style.display=f.style.display==='none'?'grid':'none'};
+$('cad2').onclick=async()=>{const m=$('lmsg');m.textContent='Cadastrando…';
+ try{const r=await fetch(SB_URL+'/functions/v1/criar-admin',{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY},body:JSON.stringify({nome:$('cn').value,email:$('ce').value,senha:$('cp').value,codigo:$('cc').value})});
+  let j={};try{j=await r.json()}catch(e){}
+  if(!r.ok||!j.ok){m.textContent='Erro '+r.status+': '+(j.erro||j.message||'resposta inesperada da função (confira se está publicada e com Verify JWT desligado).');return}
+  $('le').value=$('ce').value;$('lp').value=$('cp').value;$('cp').value='';$('cc').value='';m.textContent='Administrador criado. Entrando…';$('lok').click()
+ }catch(e){m.textContent='Falha de rede ao chamar a função criar-admin: '+e.message}};
+async function boot(){
+ DB={y:2026,m:10,U:{},R:{},P:{}};build();render();
+ const n=await sb.from('monitores').select('id,nome').order('id');
+ if(n.data&&n.data.length===5){names=n.data.map(x=>x.nome);[...$('names').children].forEach((e,i)=>e.value=names[i])}
+ await checkAdmin();
+ const cs=await sb.from('competencias').select('ym').order('ym',{ascending:false}).limit(1);
+ await loadMonth(cs.data&&cs.data[0]?cs.data[0].ym:'2026-11');
+ if(isAdm)loadHist()}
+// upload
+async function extract(file){
+ if(typeof pdfjsLib==='undefined')throw new Error('Leitor de PDF não carregou');
+ pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+ const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;
+ const page=await pdf.getPage(1);
+ const tc=await page.getTextContent();
+ const it=tc.items.map(i=>({
+  s:String(i.str||'').replace(/\s+/g,' ').trim(),
+  x:i.transform[4],y:i.transform[5]
+ })).filter(i=>i.s);
+ const nome=(file.name||'').toLowerCase();
+ const rural=/rural/.test(nome), urbano=/urbano/.test(nome);
+ if(!rural&&!urbano)throw new Error('Não consegui identificar se o PDF é RURAL ou URBANO pelo nome do arquivo.');
+
+ // Neste PDF as células são rotacionadas internamente: cada cabeçalho ETAPA
+ // aparece em uma coordenada Y diferente. Não agrupar cabeçalhos por linha.
+ const etapaRe=/ETAPA\s*0*(\d{1,2})/i;
+ const cabecalhos=it.map(i=>{const m=i.s.match(etapaRe);return m?{n:+m[1],x:i.x,y:i.y}:null}).filter(Boolean);
+ const etapasEsperadas=rural?Array.from({length:18},(_,i)=>i+32):[1,2,3,31,...Array.from({length:15},(_,i)=>i+4)];
+ const etapasOrdenadas=cabecalhos.sort((a,b)=>a.y-b.y);
+ const numsEncontrados=etapasOrdenadas.map(e=>e.n);
+ if(numsEncontrados.length!==etapasEsperadas.length || numsEncontrados.some((n,i)=>n!==etapasEsperadas[i])){
+  throw new Error('Cabeçalhos '+(rural?'RURAL':'URBANO')+' divergentes. Esperado: '+etapasEsperadas.join(', ')+'. Encontrado: '+(numsEncontrados.join(', ')||'nenhum')+'.');
+ }
+
+ // A linha verde DATA DE LEITURA é identificada pelo rótulo. Nos PDFs da
+ // Equatorial, a coluna de datas fica cerca de 9 pontos antes do X do rótulo.
+ const rotulo=it.find(i=>/DATA\s+DE\s+LEITURA/i.test(i.s));
+ if(!rotulo)throw new Error('Não encontrei a linha DATA DE LEITURA no PDF.');
+ const alvoX=rotulo.x-9;
+ const dateRe=/(\d{1,2})\s*\/\s*([a-zç]{3})/i;
+ const meses={jan:0,fev:1,mar:2,abr:3,mai:4,jun:5,jul:6,ago:7,set:8,out:9,nov:10,dez:11};
+ const datas=it.map(i=>{
+  const m=i.s.match(dateRe);if(!m)return null;
+  const mes=meses[m[2].toLowerCase()];if(mes===undefined)return null;
+  return {d:+m[1],m:mes,label:String(+m[1]).padStart(2,'0')+'/'+m[2].toLowerCase(),x:i.x,y:i.y};
+ }).filter(d=>d&&Math.abs(d.x-alvoX)<=5).sort((a,b)=>a.y-b.y);
+ if(datas.length!==etapasEsperadas.length){
+  throw new Error('A linha DATA DE LEITURA deveria conter '+etapasEsperadas.length+' datas, mas foram encontradas '+datas.length+'. Verifique o PDF selecionado.');
+ }
+
+ // Confere o alinhamento vertical entre cada cabeçalho e sua data antes de mapear.
+ const mesesNome={janeiro:0,fevereiro:1,'março':2,marco:2,abril:3,maio:4,junho:5,julho:6,agosto:7,setembro:8,outubro:9,novembro:10,dezembro:11};
+ const nomeMes=nome.match(/(janeiro|fevereiro|março|marco|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)/i);
+ const nomeAno=nome.match(/\b(20\d{2})\b/);
+ const competenciaMes=nomeMes?mesesNome[nomeMes[1].toLowerCase()]:datas[0].m;
+ const competenciaAno=nomeAno?+nomeAno[1]:2026;
+ const etapasMap=etapasOrdenadas.map((etapa,i)=>{
+  const delta=Math.abs(etapa.y-datas[i].y);
+  if(delta>7)throw new Error('A data da etapa '+pad(etapa.n)+' não está alinhada com a linha DATA DE LEITURA.');
+  let ano=competenciaAno;
+  if(datas[i].m-competenciaMes>6)ano--;
+  else if(competenciaMes-datas[i].m>6)ano++;
+  return {n:etapa.n,t:Date.UTC(ano,datas[i].m,datas[i].d)/864e5};
+ });
+ return {etapas:etapasMap,y:competenciaAno,m:competenciaMes};
+}
+let pend=null;
+['fr','fu'].forEach(id=>$(id).onchange=e=>{$(id==='fr'?'nr':'nu').textContent=e.target.files[0]?e.target.files[0].name:''});
+$('proc').onclick=async()=>{
+ const fr=$('fr').files[0],fu=$('fu').files[0];if(!fr||!fu){$('um').textContent='Selecione os dois PDFs.';return}
+ $('um').textContent='Processando…';
+ try{const r=await extract(fr),u=await extract(fu);pend={r,u};
+  const tb=(t,e)=>'<div class="card tw" style="margin-bottom:10px"><b>'+t+'</b><table><thead><tr><th>Etapa</th><th>Data de leitura</th></tr></thead><tbody>'+e.map(x=>'<tr><td>'+pad(x.n)+'</td><td>'+fd(x.t)+'</td></tr>').join('')+'</tbody></table></div>';
+  $('prev').innerHTML=tb('Rural',r.etapas)+tb('Urbano',u.etapas)+'<button id="ap">Confirmar e aplicar dados</button>';
+  $('um').textContent='Confira os dados extraídos e confirme.';
+  $('ap').onclick=()=>aplicar(r,u)
+ }catch(e){$('um').textContent='Erro: '+e.message}};
+// ui
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{
+ document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));
+ ['cal','srt','upl'].forEach(t=>$('t-'+t).hidden=t!==b.dataset.t)});
+const nm=$('names');names.forEach((n,i)=>{const e=document.createElement('input');e.value=n;e.setAttribute('aria-label','Monitor '+(i+1));
+ e.oninput=()=>{if(lockOf(YM()))return;names[i]=e.value.trim()||('MONITOR '+(i+1));render()};nm.appendChild(e)});
+$('go').onclick=()=>{if(!isAdm||lockOf(YM()))return;draw();drawId='SORT-'+YM().replace('-','')+'-'+Date.now().toString(36).toUpperCase();$('lm').textContent='';render()};
+['fmon','fcat'].forEach(i=>$(i).onchange=renderCal);$('fm').onchange=()=>$('fm').value&&loadMonth($('fm').value);$('fq').oninput=renderCal;
+$('prt').onclick=()=>$('pd').hidden=!$('pd').hidden;
+$('pall').onclick=()=>{const[y,m]=view(),d=pdfCal();if(d)saveDoc(d,'Calendario_Leitura_'+asc(mesCap(m))+'_'+y+'.pdf')};
+$('pone').onclick=()=>{const[y,m]=view(),i=+$('pmon').value,d=pdfOne(i);if(d)saveDoc(d,'Calendario_Cadastro_'+asc(names[i].toUpperCase())+'_'+asc(mesCap(m))+'_'+y+'.pdf')};
+boot();
+</script></body></html>
