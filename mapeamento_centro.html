@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAPEAMENTO CENTRO</title>
+<script async data-lib="xlsx" src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script async data-lib="supabase" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script async data-lib="exceljs" src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b1120;--side:#080f1d;--panel:#111c2f;--panel2:#17243a;--line:#26364f;--txt:#f1f5f9;--muted:#94a3b8;--cyan:#06b6d4;--blue:#3b82f6;--red:#ef4444;--orange:#f97316;--purple:#a855f7;--green:#22c55e;--yellow:#eab308}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:Lexend,Arial,sans-serif;font-size:13px}button,input,select{font:inherit}.app{display:flex;min-height:100vh}.sidebar{width:276px;min-width:276px;background:var(--side);border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column;transition:.25s;flex-shrink:0}.sidebar.closed{width:76px;min-width:76px}.brand{display:flex;align-items:center;gap:10px;padding:4px 6px 24px;min-width:0}.brandmark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#06b6d4,#2563eb);display:grid;place-items:center;flex:0 0 40px}.brandmark svg{width:25px;height:25px;display:block}.brandname{flex:1;min-width:0;font-size:13px;line-height:1.35;font-weight:700;letter-spacing:.15px;white-space:normal;overflow-wrap:normal;word-break:normal}.brand small{display:block;color:var(--muted);font-size:8px;line-height:1.4;letter-spacing:.9px;margin-top:4px;white-space:normal}.nav{display:grid;gap:7px}.nav button{border:0;background:transparent;color:var(--muted);padding:12px 13px;border-radius:10px;display:flex;align-items:center;gap:13px;text-align:left;cursor:pointer;white-space:nowrap}.nav button:hover,.nav button.active{background:#14263d;color:#fff}.nav button.active{box-shadow:inset 3px 0 var(--cyan)}.nav .ico{font-size:17px;width:22px;text-align:center}.sidebar.closed .brandname,.sidebar.closed .nav .navlabel,.sidebar.closed .sidefoot span{display:none}.sidebar.closed .brand{justify-content:center;padding-left:0;padding-right:0}.sidebar.closed .nav button{justify-content:center;padding:13px 4px}.sidefoot{margin-top:auto;color:var(--muted);font-size:10px;padding:16px 9px;border-top:1px solid var(--line)}.main{min-width:0;flex:1}.topbar{height:70px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:#0b1424;position:sticky;top:0;z-index:5}.top-left{display:flex;align-items:center;gap:16px}.hamb{border:1px solid var(--line);background:var(--panel);color:var(--txt);border-radius:9px;width:38px;height:38px;cursor:pointer;font-size:18px}.top-title{font-weight:700;letter-spacing:.7px;white-space:nowrap;min-width:0;font-size:clamp(12px,1.5vw,16px);overflow:visible;text-overflow:clip}.top-right{display:flex;align-items:center;gap:16px;color:var(--muted);font-size:11px}.status{color:#86efac}.content{padding:26px 28px;max-width:1600px;margin:auto}.page{display:none}.page.active{display:block}.eyebrow{font-size:10px;letter-spacing:1.7px;color:var(--cyan);font-weight:600}.heading{font-size:25px;font-weight:600;margin:7px 0 5px}.sub{color:var(--muted);margin:0 0 22px;font-size:12px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.panel,.metric,.category{background:var(--panel);border:1px solid var(--line);border-radius:14px}.metric{padding:17px 18px;position:relative;overflow:hidden}.metric:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent,var(--cyan))}.metric-label{color:var(--muted);font-size:10px;letter-spacing:1px;text-transform:uppercase}.metric-value{font-size:27px;font-weight:600;margin:9px 0 3px}.metric-note{color:var(--muted);font-size:10px}.category{padding:17px;min-height:220px}.cathead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.catname{font-size:13px;font-weight:600;display:flex;align-items:center;gap:9px}.dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}.tag{font-size:9px;color:var(--muted);background:#1b2b43;padding:5px 8px;border-radius:20px}.empty{border:1px dashed #344761;border-radius:10px;padding:25px;text-align:center;color:var(--muted);font-size:11px}.section-title{display:flex;align-items:center;justify-content:space-between;margin:26px 0 12px}.section-title h3{font-size:15px;margin:0}.section-title span{color:var(--muted);font-size:10px}.panel{padding:18px;margin-top:16px}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:10px}table{border-collapse:collapse;width:100%;min-width:760px;font-size:11px}th{background:#17243a;color:#cbd5e1;text-align:left;padding:12px 13px;font-size:9px;letter-spacing:.7px;text-transform:uppercase;position:sticky;top:0}td{padding:11px 13px;border-top:1px solid #202f45;color:#dbe5f1}tr:nth-child(even) td{background:#121f32}td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}.total{color:var(--cyan);font-weight:700}.rank{font-weight:700;color:#fbbf24}.muted{color:var(--muted)}.filters{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}.filters input,.filters select,.uploadbox input{background:#0c1728;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:10px 12px;outline:none}.filters input:focus,.filters select:focus{border-color:var(--cyan)}.btn{border:1px solid var(--line);background:#1b2d47;color:#eaf2ff;border-radius:8px;padding:10px 13px;cursor:pointer;font-size:11px}.btn.primary{background:#075985;border-color:#0e7490}.btn:hover{filter:brightness(1.2)}.uploadgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.uploadbox{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:17px}.uploadbox h3{font-size:13px;margin:0 0 7px}.uploadbox p{color:var(--muted);font-size:10px;line-height:1.6;min-height:32px}.uploadbox input{width:100%;font-size:10px;padding:9px}.uploadstatus{margin-top:12px;color:var(--muted);font-size:10px;line-height:1.5}.pill{display:inline-block;padding:4px 8px;border-radius:20px;background:#153b32;color:#86efac;font-size:9px}.seccards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.seccard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px}.seccard h3{font-size:12px;margin:0 0 12px;color:#e2e8f0}.priority{font-size:9px;padding:4px 7px;border-radius:5px;background:#3b1e25;color:#fca5a5}.priority.high{background:#422b18;color:#fdba74}.priority.mid{background:#403616;color:#fde68a}.recommend{max-width:300px;white-space:normal;line-height:1.5;color:#c4b5fd}.bar{height:6px;background:#26364f;border-radius:20px;overflow:hidden;min-width:80px}.bar i{display:block;height:100%;background:var(--cyan);border-radius:20px}.hidden{display:none!important}.notice{background:#17243a;border:1px solid #31506d;padding:12px 14px;border-radius:9px;color:#cbd5e1;font-size:11px;line-height:1.6;margin:14px 0}.toast{position:fixed;bottom:20px;right:20px;background:#12352e;border:1px solid #236b57;color:#bbf7d0;padding:12px 16px;border-radius:9px;z-index:20;display:none}.small{font-size:10px;color:var(--muted)}@media(max-width:1050px){.grid3{grid-template-columns:1fr}.grid4{grid-template-columns:repeat(2,1fr)}.uploadgrid{grid-template-columns:1fr}.seccards{grid-template-columns:1fr}}@media(max-width:700px){.topbar{gap:8px;padding:0 10px}.top-left{gap:9px;min-width:0}.top-title{font-size:clamp(10px,3vw,14px);letter-spacing:.25px}.sidebar{position:fixed;z-index:10;height:100vh;width:248px;transform:translateX(-100%)}.sidebar.mobileopen{transform:translateX(0)}.sidebar.closed{width:248px}.sidebar.closed .brandname,.sidebar.closed .nav .navlabel,.sidebar.closed .sidefoot span{display:block}.content{padding:18px 14px}.topbar{padding:0 14px}.top-right .lastupdate{display:none}.grid4{grid-template-columns:repeat(2,1fr)}.heading{font-size:21px}}
+
+/* Recursos adicionados após a V1.0.6 — sem alterar o layout-base. */
+.admin-only{display:none!important}
+.is-admin .admin-only{display:flex!important}
+.auth-modal{position:fixed;inset:0;background:#020817dd;z-index:50;display:none;align-items:center;justify-content:center;padding:18px}
+.auth-modal.open{display:flex}
+.auth-card{width:min(420px,100%);background:#111c2f;border:1px solid #31506d;border-radius:16px;padding:24px;box-shadow:0 24px 80px #0009}
+.auth-card h2{margin:0 0 8px;font-size:20px}
+.auth-card p{color:var(--muted);font-size:11px;line-height:1.6}
+.auth-card label{display:block;margin:14px 0 6px;color:#cbd5e1;font-size:11px}
+.auth-card input{width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;background:#0c1728;color:var(--txt)}
+.auth-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+ <div class="brand"><div class="brandmark" aria-label="Ícone Monitoria Centro"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h17"/><path d="m7 15 4-4 3 2 6-7"/><path d="M16 6h4v4"/></svg></div><div class="brandname">MAPEAMENTO CENTRO<small>INTELIGÊNCIA OPERACIONAL</small></div></div>
+ <nav class="nav">
+  <button class="active" data-page="dashboard" type="button"><span class="ico">▦</span><span class="navlabel">Dashboard</span></button>
+  <button data-page="evolucao" type="button"><span class="ico">▥</span><span class="navlabel">Evolução mensal</span></button>
+  <button data-page="importacao" id="importNav" class="admin-only" type="button"><span class="ico">▤</span><span class="navlabel">Importação de bases</span></button>
+  <button data-page="ranking"><span class="ico">♜</span><span class="navlabel">Ranking geral</span></button>
+  <button data-page="reciclagem"><span class="ico">✦</span><span class="navlabel">Reciclagem</span></button>
+  <button data-page="capacitados"><span class="ico">✓</span><span class="navlabel">Agentes Capacitados</span></button>
+  <button data-page="detalhamento"><span class="ico">⌕</span><span class="navlabel">Detalhamento</span></button>
+ </nav>
+ <div class="sidefoot"><span>● Processamento local<br><span id="versionLabel">Monitoria Centro V1.0.11</span></span></div>
+</aside>
+<main class="main">
+<header class="topbar"><div class="top-left"><button class="hamb" id="toggle" type="button">☰</button><div class="top-title">MAPEAMENTO CENTRO</div></div><div class="top-right"><span class="lastupdate" id="lastUpdate">Conectando ao Supabase...</span><span class="status" id="connectionStatus">● SUPABASE</span><button class="btn" id="adminLoginBtn" type="button">Entrar como administrador</button><button class="btn admin-only" id="adminLogoutBtn" type="button">Sair</button></div></header>
+<div class="content">
+<section class="page active" id="page-dashboard">
+ <div class="eyebrow">CENTRAL DE INTELIGÊNCIA OPERACIONAL</div><h1 class="heading">Dashboard</h1><p class="sub">Visão consolidada dos agentes ofensores por categoria e seccional.</p>
+ <div class="grid4" id="summaryMetrics"></div>
+ <div class="section-title"><h3>Indicadores por categoria</h3><span>TOP 5 POR SECCIONAL · CNL QTD POR APONTAMENTO</span></div>
+ <div class="grid3" id="categoryCards"></div>
+ <div class="section-title"><h3>Ranking geral – agentes ofensores</h3><span>ORDENADO PELO TOTAL GERAL</span></div>
+ <div class="panel"><div class="filters"><input id="dashSearch" placeholder="Pesquisar agente..." /><select id="dashSec"><option value="">Todas as seccionais</option></select><button class="btn" onclick="exportRanking()">Exportar Excel/CSV</button></div><div id="dashTable"></div></div>
+</section>
+<section class="page" id="page-evolucao">
+ <div class="eyebrow">ACOMPANHAMENTO HISTÓRICO</div><h1 class="heading">Evolução mensal dos agentes</h1>
+ <p class="sub">Histórico de todas as competências importadas. A classificação de evolução compara somente as duas competências mais recentes disponíveis; os meses permanecem em colunas.</p>
+ <div class="notice">A cada importação, os dados da competência são acumulados no histórico mensal do Supabase. Reimportar a mesma competência atualiza seus valores sem apagar os demais meses. A comparação considera aumento, redução ou ausência de alteração.</div>
+ <div class="filters"><select id="evoSec"><option value="">Todas as seccionais</option></select><input id="evoSearch" placeholder="Pesquisar agente..."/><button class="btn" onclick="loadEvolution()">Atualizar evolução</button><button class="btn primary" onclick="exportEvolution()">Exportar Excel/CSV</button></div>
+ <div class="grid4" id="evoMetrics"></div><div class="panel" id="evoTable"></div>
+</section>
+<section class="page" id="page-importacao">
+ <div class="eyebrow">GESTÃO DE DADOS</div><h1 class="heading">Importação de bases</h1><p class="sub">Envie as planilhas para o banco compartilhado do Supabase. A substituição atualiza o relatório para todos os usuários.</p>
+ <div class="notice">🔒 <b>Área administrativa:</b> somente a conta autorizada pode importar. O upload atualiza a base corrente e acrescenta/atualiza somente a competência informada no histórico mensal. Os meses anteriores nunca são apagados.</div>
+ <div class="filters"><label for="competenciaImport" class="small" style="align-self:center">Competência da importação (se não vier preenchida na planilha):</label><input type="month" id="competenciaImport" /></div>
+ <div class="uploadgrid">
+  <div class="uploadbox"><h3 style="color:#f87171">● CNL QTD</h3><p>Ranking por seccional, agente e apontamento.</p><input type="file" id="fileCnl" accept=".xlsx,.xls,.csv"><div class="uploadstatus" id="statusCnl">Nenhuma base importada.</div></div>
+  <div class="uploadbox"><h3 style="color:#fb923c">● REFATURAMENTO</h3><p>Ranking por quantidade de instalações distintas.</p><input type="file" id="fileRef" accept=".xlsx,.xls,.csv"><div class="uploadstatus" id="statusRef">Nenhuma base importada.</div></div>
+  <div class="uploadbox"><h3 style="color:#60a5fa">● CNL SEM NORMALIZAÇÃO</h3><p>Ranking por quantidade de instalações distintas.</p><input type="file" id="fileSem" accept=".xlsx,.xls,.csv"><div class="uploadstatus" id="statusSem">Nenhuma base importada.</div></div>
+ </div>
+ <div class="panel"><h3 style="margin:0 0 8px;font-size:13px">Como funciona</h3><p class="small">1. Selecione o arquivo Excel ou CSV. 2. Confira a confirmação de substituição. 3. O Supabase valida e grava a nova base em uma transação. 4. Os demais usuários recebem os dados atualizados automaticamente.</p><button class="btn" type="button" onclick="clearAll()">Limpar cache local deste navegador</button></div>
+</section>
+<section class="page" id="page-ranking">
+ <div class="eyebrow">CONSOLIDAÇÃO DAS TRÊS BASES</div><h1 class="heading">Ranking geral</h1><p class="sub">Todos os agentes classificados pela soma das três categorias.</p>
+ <div class="grid4" id="rankingMetrics"></div>
+ <div class="panel"><div class="filters"><input id="rankSearch" placeholder="Pesquisar agente..." /><select id="rankSec"><option value="">Todas as seccionais</option></select><button class="btn primary" onclick="exportRanking()">Exportar ranking</button></div><div id="rankingTable"></div></div>
+</section>
+<section class="page" id="page-reciclagem">
+ <div class="eyebrow">PLANO DE DESENVOLVIMENTO OPERACIONAL</div><h1 class="heading">Reciclagem</h1><p class="sub">Agentes entre os cinco maiores de cada indicador por seccional. CNL QTD considera os cinco maiores de cada apontamento. A lista não é completada com agentes sem ocorrências.</p>
+ <div class="grid4" id="recycleMetrics"></div>
+ <div class="filters"><select id="recycleSec"><option value="">Todas as seccionais</option></select><input id="recycleSearch" placeholder="Pesquisar agente..." /><button class="btn primary" onclick="exportRecycle()">Exportar Excel (.xlsx)</button></div>
+ <div id="recycleCards" class="seccards"></div>
+</section>
+<section class="page" id="page-capacitados">
+ <div class="eyebrow">ACOMPANHAMENTO DE DESENVOLVIMENTO</div><h1 class="heading">Agentes Capacitados</h1>
+ <p class="sub">Histórico permanente dos agentes que entraram na lista de Reciclagem. A lista não é apagada quando as bases são atualizadas.</p>
+ <div class="notice">Os agentes identificados na Reciclagem são adicionados automaticamente. Informe a Data da Reciclagem para acompanhar a evolução. O histórico fica salvo neste navegador, separado das bases importadas.</div>
+ <div class="grid4" id="trainedMetrics"></div>
+ <div class="filters"><select id="trainedSec"><option value="">Todas as seccionais</option></select><select id="trainedStatus"><option value="">Todos os status</option><option>AGENTE NÃO RECICLADO</option><option>AGENTE NÃO RECUPERADO</option><option>AGENTE RECUPERADO</option><option>FORA DO TOP 5 ATUAL</option></select><input id="trainedSearch" placeholder="Pesquisar agente..."/><button class="btn primary" onclick="exportTrained()">Exportar Excel (.xlsx)</button></div>
+ <div class="panel" id="trainedTable"></div>
+</section>
+<section class="page" id="page-detalhamento">
+ <div class="eyebrow">CONSULTA DE REGISTROS</div><h1 class="heading">Detalhamento</h1><p class="sub">Consulte as instalações contabilizadas em cada categoria.</p>
+ <div class="filters"><select id="detailCat"><option value="all">Todas as categorias</option><option value="cnl">CNL QTD</option><option value="sem">CNL SEM NORMALIZAÇÃO</option><option value="ref">REFATURAMENTO</option></select><select id="detailSec"><option value="">Todas as seccionais</option></select><input id="detailSearch" placeholder="Pesquisar agente ou instalação..." /></div><div class="panel" id="detailTable"></div>
+</section>
+</div></main></div><div class="auth-modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
+ <form class="auth-card" id="adminLoginForm">
+  <div class="brandmark" style="margin-bottom:16px"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="25" height="25"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+  <h2 id="adminModalTitle">Acesso administrativo</h2>
+  <p>Entre com a conta autorizada para importar e substituir as bases do Mapeamento Centro.</p>
+  <label for="adminUsername">Login</label><input id="adminUsername" autocomplete="username" value="ricardobarboza" required>
+  <label for="adminPassword">Senha</label><input id="adminPassword" type="password" autocomplete="current-password" placeholder="Sua senha do Supabase Auth" required>
+  <div class="auth-actions"><button class="btn" type="button" id="cancelAdminLogin">Cancelar</button><button class="btn primary" type="submit" id="submitAdminLogin">Entrar</button></div>
+  <p id="authError" style="color:#fca5a5;margin-bottom:0"></p>
+ </form>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const DB={cnl:[],ref:[],sem:[]}, META={cnl:null,ref:null,sem:null};
+const $=id=>document.getElementById(id);
+const APP_VERSION='1.0.11';
+document.getElementById('versionLabel').textContent='Monitoria Centro V'+APP_VERSION;
+const SUPABASE_URL='https://qehxnainrvvcmhdclsxd.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_C2jgVYYxq2G4uc14vvky8A_6eG9Dhnw';
+const ADMIN_LOGIN='ricardobarboza';
+const ADMIN_EMAIL='ricardobarbozacorp@gmail.com';
+let supabase=null;
+function createSupabaseClient(){
+ if(supabase)return true;
+ try{
+  if(window.supabase&&typeof window.supabase.createClient==='function'){
+   supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+   return true;
+  }
+ }catch(initError){console.error('Falha ao iniciar Supabase:',initError)}
+ return false;
+}
+let currentSession=null,isAdmin=false,remoteLoading=false;
+let EVOLUCAO=[];
+function normalizeCompetence(v){const x=clean(v);if(!x)return '';let m=x.match(/^(\d{4})[-/](\d{1,2})(?:[-/](\d{1,2}))?$/);if(m)return m[1]+'-'+String(m[2]).padStart(2,'0');m=x.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/);if(m)return m[3]+'-'+String(m[2]).padStart(2,'0');m=x.match(/^(\d{1,2})[-/](\d{4})$/);if(m)return m[2]+'-'+String(m[1]).padStart(2,'0');const names={'JANEIRO':'01','JAN':'01','FEVEREIRO':'02','FEV':'02','FEV.':'02','MARCO':'03','MAR':'03','MARÇO':'03','ABRIL':'04','ABR':'04','MAIO':'05','MAI':'05','JUNHO':'06','JUN':'06','JULHO':'07','JUL':'07','AGOSTO':'08','AGO':'08','SETEMBRO':'09','SET':'09','OUTUBRO':'10','OUT':'10','NOVEMBRO':'11','NOV':'11','DEZEMBRO':'12','DEZ':'12'};const n=x.toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\./g,'');m=n.match(/^(\w+)[ /-]+(\d{4})$/);if(m&&names[m[1]])return m[2]+'-'+names[m[1]];m=n.match(/^(\d{4})[ /-]+(\w+)$/);if(m&&names[m[2]])return m[1]+'-'+names[m[2]];m=n.match(/^(\d{1,2})[/-](\d{2})$/);if(m)return (Number(m[2])>=70?'19':'20')+m[2]+'-'+String(m[1]).padStart(2,'0');return x;}
+const norm=s=>String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+function field(row,names){const keys=Object.keys(row);for(const n of names){const k=keys.find(x=>norm(x)===norm(n));if(k!==undefined)return row[k]}return ''}
+function clean(v){return String(v??'').trim().replace(/\s+/g,' ')}
+function keyName(v){return clean(v).toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+function parseRow(r,cat){
+ const secc=clean(field(r,['SECCIONAL'])),inst=clean(field(r,['INSTALACAO','INSTALAÇÃO'])),agent=clean(field(r,['NOME_AGENTE','NOME AGENTE'])),agcode=clean(field(r,['AGENTE']));
+ return {secc,inst,agent:agent||agcode||'AGENTE NÃO IDENTIFICADO',apont:clean(field(r,['APONTAMENTO']))||'SEM APONTAMENTO',medidor:clean(field(r,['MEDIDOR_LEITURA','MEDIDOR','LOCAL_INSTALACAO_MEDIDOR'])),medPosterior:clean(field(r,['MEDIDOR_POSTERIOR'])),status:clean(field(r,['STATUS_METRICA'])),nota:clean(field(r,['NOTA_LEITURA'])),competencia:normalizeCompetence(field(r,['COMPETENCIA','COMPETÊNCIA','MES','MÊS']))};
+}
+function distinctCount(rows){return new Set(rows.map(x=>x.inst).filter(Boolean)).size}
+function aggregate(rows,groupFn){const m=new Map();for(const r of rows){if(!r.secc||!r.agent||!r.inst)continue;const k=groupFn(r);if(!m.has(k))m.set(k,{secc:r.secc,agent:r.agent,insts:new Set(),rows:[],apont:r.apont});const x=m.get(k);x.insts.add(r.inst);x.rows.push(r)}return [...m.values()].map(x=>({...x,count:x.insts.size})).filter(x=>x.count>0)}
+function baseAggregates(){
+ const c=aggregate(DB.cnl,r=>keyName(r.secc)+'|'+keyName(r.agent));
+ const s=aggregate(DB.sem,r=>keyName(r.secc)+'|'+keyName(r.agent));
+ const f=aggregate(DB.ref,r=>keyName(r.secc)+'|'+keyName(r.agent));
+ const map=new Map();
+ for(const [cat,list] of [['cnl',c],['sem',s],['ref',f]])for(const x of list){const k=keyName(x.secc)+'|'+keyName(x.agent);if(!map.has(k))map.set(k,{secc:x.secc,agent:x.agent,cnl:0,sem:0,ref:0,cnlRows:[],semRows:[],refRows:[]});map.get(k)[cat]=x.count;map.get(k)[cat+'Rows']=x.rows}
+ return [...map.values()].map(x=>({...x,total:x.cnl+x.sem+x.ref,main:mainCategory(x)})).sort((a,b)=>b.total-a.total||b.ref-a.ref||b.cnl-a.cnl||b.sem-a.sem);
+}
+function mainCategory(x){const vals=[['cnl',x.cnl],['sem',x.sem],['ref',x.ref]].sort((a,b)=>b[1]-a[1]);return vals[0][1]===0?'Sem ocorrências':vals[0][0]}
+// Seleciona a união dos TOP 5 reais de cada indicador por seccional. CNL QTD é classificado por apontamento.
+function offenderSelection(){
+ const all=baseAggregates(),byKey=new Map(all.map(x=>[keyName(x.secc)+'|'+keyName(x.agent),x])),selected=new Map();
+ const add=(x)=>{const k=keyName(x.secc)+'|'+keyName(x.agent);if(byKey.has(k))selected.set(k,byKey.get(k));};
+ const cnlBySecAp=groupBy(aggregate(DB.cnl,r=>keyName(r.secc)+'|'+keyName(r.agent)+'|'+keyName(r.apont)),x=>keyName(x.secc)+'|'+keyName(x.apont));
+ for(const vals of cnlBySecAp.values())topBy(vals,5).forEach(add);
+ const refBySec=groupBy(aggregate(DB.ref,r=>keyName(r.secc)+'|'+keyName(r.agent)),x=>keyName(x.secc));
+ for(const vals of refBySec.values())topBy(vals,5).forEach(add);
+ const semBySec=groupBy(aggregate(DB.sem,r=>keyName(r.secc)+'|'+keyName(r.agent)),x=>keyName(x.secc));
+ for(const vals of semBySec.values())topBy(vals,5).forEach(add);
+ // A Reciclagem tem limite absoluto de cinco agentes por seccional.
+ // Primeiro reúne os agentes classificados em pelo menos um indicador; depois
+ // consolida por agente, ordena pelo total geral e mantém somente os cinco primeiros.
+ const ordered=[...selected.values()].sort((a,b)=>a.secc.localeCompare(b.secc,'pt-BR')||b.total-a.total||b.ref-a.ref||b.cnl-a.cnl||b.sem-a.sem||a.agent.localeCompare(b.agent,'pt-BR'));
+ const countBySec=new Map(),limited=[];
+ for(const agent of ordered){
+  const secKey=keyName(agent.secc),count=countBySec.get(secKey)||0;
+  if(count>=5)continue;
+  limited.push(agent);countBySec.set(secKey,count+1);
+ }
+ return limited;
+}
+function topBy(list,n=5){return [...list].sort((a,b)=>b.count-a.count||a.agent.localeCompare(b.agent)).slice(0,n)}
+function groupBy(arr,fn){const m=new Map();arr.forEach(x=>{const k=fn(x);if(!m.has(k))m.set(k,[]);m.get(k).push(x)});return m}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fmt(n){return (n||0).toLocaleString('pt-BR')}
+function table(rows,headers){if(!rows.length)return '<div class="empty">Nenhum registro disponível. Importe as bases para visualizar os resultados.</div>';return `<div class="tablewrap"><table><thead><tr>${headers.map(h=>`<th class="${h.num?'num':''}">${h.label}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${headers.map(h=>`<td class="${h.num?'num':''}">${h.get(r)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
+function setOptions(){const secs=[...new Set([...DB.cnl,...DB.sem,...DB.ref].map(x=>x.secc).concat(EVOLUCAO.map(x=>x.seccional)).filter(Boolean))].sort();['dashSec','rankSec','recycleSec','detailSec','trainedSec','evoSec'].forEach(id=>{const el=$(id),v=el.value;el.innerHTML='<option value="">Todas as seccionais</option>'+secs.map(s=>`<option>${escapeHtml(s)}</option>`).join('');el.value=secs.includes(v)?v:''})}
+function updateStatuses(){[['cnl','statusCnl'],['ref','statusRef'],['sem','statusSem']].forEach(([k,id])=>{$(id).innerHTML=META[k]?`<span class="pill">✓ IMPORTADA</span><br>${fmt(DB[k].length)} linhas · ${escapeHtml(META[k].name)}<br><span class="small">${META[k].date}</span>`:'Nenhuma base importada.'});$('lastUpdate').textContent=Object.values(META).some(Boolean)?'Última importação: '+new Date().toLocaleString('pt-BR'):'Bases não importadas'}
+function render(){
+ const all=baseAggregates(),secs=[...new Set(all.map(x=>x.secc))].sort();setOptions();updateStatuses();
+ const sum=(k)=>all.reduce((a,x)=>a+x[k],0);
+ $('summaryMetrics').innerHTML=[['INSTALAÇÕES CNL QTD',sum('cnl'),'#ef4444'],['INSTALAÇÕES REFATURAMENTO',sum('ref'),'#f97316'],['INSTALAÇÕES CNL SEM NORMALIZAÇÃO',sum('sem'),'#3b82f6'],['AGENTES NO RANKING',all.length,'#06b6d4']].map(x=>`<div class="metric" style="--accent:${x[2]}"><div class="metric-label">${x[0]}</div><div class="metric-value">${fmt(x[1])}</div><div class="metric-note">Consolidado das bases importadas</div></div>`).join('');
+ const cGroups=groupBy(aggregate(DB.cnl,r=>keyName(r.secc)+'|'+keyName(r.agent)+'|'+keyName(r.apont)),x=>x.secc);
+ const cHtml=[['CNL QTD','#ef4444'],['REFATURAMENTO','#f97316'],['CNL SEM NORMALIZAÇÃO','#3b82f6']].map(([name,color],i)=>{
+  let content='';
+  if(i===0){content=[...cGroups.entries()].sort().map(([sec,items])=>`<div style="margin:10px 0"><b style="font-size:10px;color:#cbd5e1">${escapeHtml(sec)}</b>${[...groupBy(items,x=>x.apont)].map(([ap,vals])=>`<div class="small" style="margin:7px 0 4px;color:#fca5a5">${escapeHtml(ap)}</div>${topBy(vals).map((x,j)=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid #26364f;font-size:10px"><span>${j+1}. ${escapeHtml(x.agent)}</span><b>${fmt(x.count)}</b></div>`).join('')}`).join('')}</div>`).join('')}
+  else {const list=i===1?aggregate(DB.ref,r=>keyName(r.secc)+'|'+keyName(r.agent)):aggregate(DB.sem,r=>keyName(r.secc)+'|'+keyName(r.agent));content=[...groupBy(list,x=>x.secc)].sort().map(([sec,vals])=>`<div style="margin:10px 0"><b style="font-size:10px;color:#cbd5e1">${escapeHtml(sec)}</b>${topBy(vals).map((x,j)=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid #26364f;font-size:10px"><span>${j+1}. ${escapeHtml(x.agent)}</span><b>${fmt(x.count)}</b></div>`).join('')}</div>`).join('')}
+  return `<div class="category" style="--accent:${color}"><div class="cathead"><div class="catname"><i class="dot"></i>${name}</div><span class="tag">TOP 5 / SECCIONAL</span></div>${content||'<div class="empty">Importe esta base para visualizar o ranking.</div>'}</div>`;
+ }).join('');$('categoryCards').innerHTML=cHtml;
+ const rankHeaders=[{label:'Pos.',get:r=>`<b class="rank">${r.pos}</b>`},{label:'Nome do agente',get:r=>`<b>${escapeHtml(r.agent)}</b>`},{label:'Seccional',get:r=>escapeHtml(r.secc)},{label:'CNL QTD',num:true,get:r=>fmt(r.cnl)},{label:'CNL sem normalização',num:true,get:r=>fmt(r.sem)},{label:'Refaturamento',num:true,get:r=>fmt(r.ref)},{label:'Total geral',num:true,get:r=>`<b class="total">${fmt(r.total)}</b>`}];
+ const renderRank=(target,searchId,secId)=>{let list=baseAggregates();const q=($(searchId)?.value||'').toLowerCase(),sec=$(secId)?.value||'';list=list.filter(x=>(!q||x.agent.toLowerCase().includes(q))&&(!sec||x.secc===sec));$(target).innerHTML=table(list.map((x,i)=>({...x,pos:i+1})),rankHeaders)};
+ renderRank('dashTable','dashSearch','dashSec');renderRank('rankingTable','rankSearch','rankSec');
+ $('rankingMetrics').innerHTML=[['AGENTES CLASSIFICADOS',all.length],['SECCIONAIS',secs.length],['TOTAL CNL QTD',sum('cnl')],['TOTAL CONSOLIDADO',sum('cnl')+sum('sem')+sum('ref')]].map((x,i)=>`<div class="metric" style="--accent:${['#06b6d4','#3b82f6','#ef4444','#a855f7'][i]}"><div class="metric-label">${x[0]}</div><div class="metric-value">${fmt(x[1])}</div></div>`).join('');
+ const chosen=groupBy(offenderSelection(),x=>x.secc);let rec=[...chosen.entries()].map(([sec,vals])=>({sec,vals:vals.sort((a,b)=>b.total-a.total||b.ref-a.ref||b.cnl-a.cnl||b.sem-a.sem)}));const sq=$('recycleSec').value,rq=$('recycleSearch').value.toLowerCase();if(sq)rec=rec.filter(x=>x.sec===sq);if(rq)rec=rec.map(x=>({...x,vals:x.vals.filter(v=>v.agent.toLowerCase().includes(rq))})).filter(x=>x.vals.length);
+ const selected=rec.flatMap(x=>x.vals);$('recycleMetrics').innerHTML=[['SECCIONAIS ANALISADAS',secs.length],['AGENTES SELECIONADOS',selected.length],['INSTALAÇÕES DOS SELECIONADOS',selected.reduce((a,x)=>a+x.total,0)],['MAIOR OFENSOR',all[0]?.agent||'—']].map((x,i)=>`<div class="metric" style="--accent:${['#a855f7','#a855f7','#06b6d4','#ef4444'][i]}"><div class="metric-label">${x[0]}</div><div class="metric-value" style="font-size:${i===3?'17px':'25px'}">${typeof x[1]==='number'?fmt(x[1]):escapeHtml(x[1])}</div></div>`).join('');
+ $('recycleCards').innerHTML=rec.map(({sec,vals})=>`<div class="seccard"><h3>${escapeHtml(sec)} <span class="tag">${vals.length} PRIORITÁRIOS</span></h3>${table(vals.map((x,i)=>({...x,pos:i+1,priority:i===0?'Máxima':i<3?'Alta':'Moderada',recommend:recommend(x)})),[{label:'#',get:r=>`<b class="rank">${r.pos}º</b>`},{label:'Agente',get:r=>`<b>${escapeHtml(r.agent)}</b>`},{label:'Total',num:true,get:r=>`<b class="total">${fmt(r.total)}</b>`},{label:'Prioridade',get:r=>`<span class="priority ${r.pos===1?'':r.pos<4?'high':'mid'}">${r.priority}</span>`},{label:'Recomendação',get:r=>`<span class="recommend">${escapeHtml(r.recommend)}</span>`}])}</div>`).join('')||'<div class="empty">Importe as bases para gerar a lista de reciclagem.</div>';
+ renderDetails();
+ syncTrainedFromRecycle();
+ renderTrained();
+ if(typeof renderEvolution==='function'&&$('evoTable'))renderEvolution();
+}
+function recommend(x){
+ const parts=[];
+ // CNL QTD: identifica o agente entre os cinco maiores de cada apontamento na seccional.
+ const cnlGroups=groupBy(aggregate(DB.cnl,r=>keyName(r.secc)+'|'+keyName(r.agent)+'|'+keyName(r.apont)),r=>keyName(r.secc)+'|'+keyName(r.apont));
+ const badAp=[];
+ for(const vals of cnlGroups.values()){
+  if(!vals.length||keyName(vals[0].secc)!==keyName(x.secc))continue;
+  if(vals.slice().sort((a,b)=>b.count-a.count||a.agent.localeCompare(b.agent)).slice(0,5).some(v=>keyName(v.agent)===keyName(x.agent)))badAp.push(vals[0].apont);
+ }
+ const uniqueAp=[...new Map(badAp.filter(Boolean).map(a=>[keyName(a),a])).values()].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+ if(uniqueAp.length)parts.push('OFENSOR EM CNL QTD — APONTAMENTOS: '+uniqueAp.join(', '));
+ const topFive=(cat)=>aggregate(DB[cat],r=>keyName(r.secc)+'|'+keyName(r.agent))
+  .filter(v=>keyName(v.secc)===keyName(x.secc))
+  .sort((a,b)=>b.count-a.count||a.agent.localeCompare(b.agent))
+  .slice(0,5).some(v=>keyName(v.agent)===keyName(x.agent));
+ if(topFive('ref'))parts.push('AGENTE OFENSOR EM REFATURAMENTO');
+ if(topFive('sem'))parts.push('AGENTE OFENSOR EM CNL SEM NORMALIZAÇÃO');
+ return parts.length?parts.join(' | '):'Não está entre os cinco maiores ofensores nas categorias acompanhadas.';
+}
+function renderDetails(){const cat=$('detailCat').value,sec=$('detailSec').value,q=$('detailSearch').value.toLowerCase();let rows=[];const add=(list,name)=>list.forEach(x=>{if((!sec||x.secc===sec)&&(!q||x.agent.toLowerCase().includes(q)||x.inst.toLowerCase().includes(q)))rows.push({cat:name,...x})});if(cat==='all'||cat==='cnl')add(DB.cnl,'CNL QTD');if(cat==='all'||cat==='sem')add(DB.sem,'CNL SEM NORMALIZAÇÃO');if(cat==='all'||cat==='ref')add(DB.ref,'REFATURAMENTO');$('detailTable').innerHTML=table(rows.slice(0,1500),[{label:'Categoria',get:r=>escapeHtml(r.cat)},{label:'Seccional',get:r=>escapeHtml(r.secc)},{label:'Agente',get:r=>escapeHtml(r.agent)},{label:'Instalação',get:r=>escapeHtml(r.inst)},{label:'Apontamento',get:r=>escapeHtml(r.apont||'—')},{label:'Medidor',get:r=>escapeHtml(r.medidor||'—')},{label:'Status métrica',get:r=>escapeHtml(r.status||'—')}])+(rows.length>1500?'<p class="small">Exibindo os primeiros 1.500 registros. Refine os filtros para localizar outros.</p>':'')}
+
+// Cadastro histórico de agentes encaminhados à reciclagem. Nunca remove registros ao atualizar bases.
+const TRAINED_KEY='mc_agentes_capacitados_v1';
+let TRAINED=(()=>{try{return JSON.parse(localStorage.getItem(TRAINED_KEY)||'{}')}catch(e){return {}}})();
+function trainedKey(sec,agent){return keyName(sec)+'|'+keyName(agent)}
+async function saveTrained(){
+ try{localStorage.setItem(TRAINED_KEY,JSON.stringify(TRAINED))}catch(e){console.warn('Não foi possível manter cache local do histórico:',e)}
+ if(!isAdmin||!supabase)return;
+ const payload=Object.values(TRAINED).map(x=>({seccional:x.secc,nome_agente:x.agent,data_reciclagem:x.dataReciclagem||null,primeira_entrada:x.primeiraEntrada||new Date().toISOString()}));
+ if(!payload.length)return;
+ const {error}=await supabase.from('agentes_capacitados').upsert(payload,{onConflict:'seccional,nome_agente'});
+ if(error)toast('Erro ao salvar histórico compartilhado: '+error.message);
+}
+function currentRecycleAgents(){const out=[];for(const [sec,vals] of groupBy(offenderSelection(),x=>x.secc)){vals.forEach((x,i)=>out.push({...x,pos:i+1}))}return out}
+function syncTrainedFromRecycle(){
+ let changed=false;
+ currentRecycleAgents().forEach(x=>{const k=trainedKey(x.secc,x.agent);if(!TRAINED[k]){TRAINED[k]={secc:x.secc,agent:x.agent,dataReciclagem:'',primeiraEntrada:new Date().toISOString()};changed=true}else{TRAINED[k].secc=x.secc;TRAINED[k].agent=x.agent}});
+ if(changed)saveTrained();
+}
+function trainedStatus(x){const inTop=currentRecycleAgents().some(a=>trainedKey(a.secc,a.agent)===trainedKey(x.secc,x.agent));if(inTop)return x.dataReciclagem?'AGENTE NÃO RECUPERADO':'AGENTE NÃO RECICLADO';return x.dataReciclagem?'AGENTE RECUPERADO':'FORA DO TOP 5 ATUAL'}
+function renderTrained(){if(!$('trainedTable'))return;const rows=Object.values(TRAINED).sort((a,b)=>a.secc.localeCompare(b.secc,'pt-BR')||a.agent.localeCompare(b.agent,'pt-BR'));const sec=$('trainedSec').value,status=$('trainedStatus').value,q=$('trainedSearch').value.toLowerCase();const filtered=rows.filter(x=>(!sec||x.secc===sec)&&(!status||trainedStatus(x)===status)&&(!q||x.agent.toLowerCase().includes(q)||x.secc.toLowerCase().includes(q)));const statuses=rows.map(trainedStatus);$('trainedMetrics').innerHTML=[['AGENTES NO HISTÓRICO',rows.length],['NÃO RECICLADOS',statuses.filter(x=>x==='AGENTE NÃO RECICLADO').length],['NÃO RECUPERADOS',statuses.filter(x=>x==='AGENTE NÃO RECUPERADO').length],['RECUPERADOS',statuses.filter(x=>x==='AGENTE RECUPERADO').length]].map((x,i)=>`<div class="metric" style="--accent:${['#06b6d4','#ef4444','#f97316','#22c55e'][i]}"><div class="metric-label">${x[0]}</div><div class="metric-value">${fmt(x[1])}</div></div>`).join('');$('trainedTable').innerHTML=table(filtered.map(x=>({...x,status:trainedStatus(x)})),[{label:'Agente',get:x=>`<b>${escapeHtml(x.agent)}</b>`},{label:'Seccional',get:x=>escapeHtml(x.secc)},{label:'Data da Reciclagem',get:x=>`<input type="date" aria-label="Data da Reciclagem de ${escapeHtml(x.agent)}" value="${escapeHtml(x.dataReciclagem||'')}" ${isAdmin?'':'disabled'} onchange="setTrainingDate('${encodeURIComponent(trainedKey(x.secc,x.agent))}',this.value)" style="background:#0c1728;color:#f1f5f9;border:1px solid #26364f;border-radius:6px;padding:7px"/>`},{label:'Status',get:x=>`<b style="color:${x.status==='AGENTE RECUPERADO'?'#86efac':x.status==='AGENTE NÃO RECICLADO'?'#fca5a5':x.status==='AGENTE NÃO RECUPERADO'?'#fdba74':'#94a3b8'}">${x.status}</b>`}])+(filtered.length?'<p class="small">A data é editável. O histórico permanece mesmo quando o agente deixa de aparecer no Top 5 da Reciclagem.</p>':'' )}
+async function setTrainingDate(encoded,value){if(!isAdmin){toast('Somente o administrador pode alterar o histórico.');renderTrained();return}const k=decodeURIComponent(encoded);if(!TRAINED[k])return;TRAINED[k].dataReciclagem=value;await saveTrained();renderTrained();toast('Data da reciclagem salva no Supabase.')}
+async function exportTrained(){const rows=Object.values(TRAINED).sort((a,b)=>a.secc.localeCompare(b.secc,'pt-BR')||a.agent.localeCompare(b.agent,'pt-BR')).map(x=>({'NOME DO AGENTE':x.agent,'SECCIONAL':x.secc,'DATA DA RECICLAGEM':x.dataReciclagem||'','STATUS':trainedStatus(x)}));if(!rows.length){toast('Não há agentes no histórico para exportar.');return}if(!window.ExcelJS){toast('Gerador Excel indisponível. Verifique sua conexão.');return}try{const wb=new ExcelJS.Workbook(),ws=wb.addWorksheet('Agentes Capacitados',{views:[{state:'frozen',ySplit:1}]});const headers=Object.keys(rows[0]);ws.addTable({name:'TabelaAgentesCapacitados',ref:'A1',headerRow:true,style:{theme:'TableStyleMedium2',showRowStripes:true},columns:headers.map(name=>({name,filterButton:true})),rows:rows.map(r=>headers.map(h=>r[h]))});ws.columns=[{width:32},{width:24},{width:22},{width:30}];const buf=await wb.xlsx.writeBuffer(),url=URL.createObjectURL(new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})),a=document.createElement('a');a.href=url;a.download='MONITORIA_CENTRO_AGENTES_CAPACITADOS_V1.0.11.xlsx';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);toast('Histórico de Agentes Capacitados exportado.')}catch(e){toast('Erro ao exportar: '+e.message)}}
+
+async function importFile(file,cat){
+ if(!file)return;
+ if(!isAdmin){toast('Entre como administrador para importar bases.');return}
+ if(!supabase){toast('Supabase não foi carregado. Verifique a conexão e atualize a página.');return}
+ if(!window.XLSX){toast('Não foi possível carregar o leitor Excel. Verifique sua conexão.');return}
+ try{
+  const buf=await file.arrayBuffer();let rows;
+  if(file.name.toLowerCase().endsWith('.csv')){const csvText=new TextDecoder('utf-8').decode(buf);const wb=XLSX.read(csvText,{type:'string'});rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''})}
+  else{const wb=XLSX.read(buf,{type:'array'});rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''})}
+  if(!rows.length)throw Error('A planilha está vazia.');
+  const first=rows[0];
+  if(!field(first,['NOME_AGENTE','NOME AGENTE','AGENTE']))throw Error('Não encontrei NOME_AGENTE nem AGENTE.');
+  for(const f of ['SECCIONAL','INSTALACAO'])if(!Object.keys(first).some(k=>norm(k)===norm(f)))throw Error('Coluna obrigatória ausente: '+f);
+  if(cat==='cnl'&&!Object.keys(first).some(k=>norm(k)===norm('APONTAMENTO')))throw Error('Coluna obrigatória ausente: APONTAMENTO');
+  const typeMap={cnl:'cnl_qtd',ref:'refaturamento',sem:'cnl_sem_normalizacao'};
+  const tipo=typeMap[cat];
+  const records=rows.map(r=>({...r,
+   SECCIONAL:clean(field(r,['SECCIONAL'])),
+   NOME_AGENTE:clean(field(r,['NOME_AGENTE','NOME AGENTE','AGENTE'])),
+   INSTALACAO:clean(field(r,['INSTALACAO','INSTALAÇÃO'])),
+   APONTAMENTO:clean(field(r,['APONTAMENTO'])),
+   COMPETENCIA:normalizeCompetence(field(r,['COMPETENCIA','COMPETÊNCIA','MES','MÊS']))||normalizeCompetence($('competenciaImport').value)
+  }));
+  if(records.some(r=>!r.COMPETENCIA))throw Error('Informe a competência no campo acima ou inclua a coluna COMPETENCIA na planilha.');
+  const targetName=({cnl:'CNL QTD',ref:'REFATURAMENTO',sem:'CNL SEM NORMALIZAÇÃO'})[cat];
+  if(!confirm(`ATENÇÃO: a base atual de ${targetName} será substituída para o Dashboard e Ranking. O histórico mensal será preservado: somente a competência presente neste arquivo será atualizada.\n\nArquivo: ${file.name}\nCompetências: ${[...new Set(records.map(r=>r.COMPETENCIA))].join(', ')}\nRegistros: ${fmt(records.length)}\n\nDeseja continuar?`))return;
+  toast('Enviando '+targetName+' para o Supabase...');
+  const {data,error}=await supabase.rpc('upload_base_ofensores',{p_tipo:tipo,p_registros:records});
+  if(error)throw Error(error.message);
+  const {error:evoError}=await supabase.rpc('upsert_evolucao_mensal',{p_tipo:tipo,p_registros:records});
+  if(evoError)throw Error('A base atual foi atualizada, mas o histórico mensal falhou: '+evoError.message);
+  if(!data?.sucesso)throw Error('O Supabase não confirmou a importação.');
+  await Promise.all([loadAllBases(),loadEvolution()]);
+  META[cat]={name:file.name,date:new Date(data.importado_em||Date.now()).toLocaleString('pt-BR')};
+  render();
+  toast(`${targetName}: ${fmt(data.registros_importados)} registros gravados no Supabase.`);
+ }catch(e){toast('Erro na importação: '+(e?.message||String(e)))}finally{$({cnl:'fileCnl',ref:'fileRef',sem:'fileSem'}[cat]).value=''}
+}
+async function loadEvolution(){
+ if(!supabase){if($('evoTable'))$('evoTable').innerHTML='<div class="empty">Supabase indisponível. A evolução mensal será exibida quando a conexão for restabelecida.</div>';return;}
+ try{const {data,error}=await supabase.from('evolucao_mensal_agentes').select('tipo,seccional,nome_agente,competencia,quantidade').order('competencia',{ascending:true});if(error)throw error;EVOLUCAO=data||[];renderEvolution()}catch(e){if($('evoTable'))$('evoTable').innerHTML='<div class="empty">Não foi possível carregar a evolução mensal. Execute o SQL de configuração da tabela evolucao_mensal_agentes no Supabase. Detalhe: '+escapeHtml(e.message)+'</div>';}}
+function renderEvolution(){
+ if(!$('evoTable'))return;setOptions();const comps=[...new Set(EVOLUCAO.map(x=>normalizeCompetence(x.competencia)).filter(Boolean))].sort();const sec=$('evoSec').value,q=$('evoSearch').value.toLowerCase();
+ const map=new Map();for(const x of EVOLUCAO){const k=keyName(x.seccional)+'|'+keyName(x.nome_agente);if(!map.has(k))map.set(k,{secc:x.seccional,agent:x.nome_agente,vals:{cnl:{},ref:{},sem:{}}});const cat=({cnl_qtd:'cnl',refaturamento:'ref',cnl_sem_normalizacao:'sem'})[x.tipo];if(cat)map.get(k).vals[cat][normalizeCompetence(x.competencia)]=(map.get(k).vals[cat][normalizeCompetence(x.competencia)]||0)+Number(x.quantidade||0)}
+ const latest=comps.slice(-2),filtered=[...map.values()].filter(x=>(!sec||x.secc===sec)&&(!q||x.agent.toLowerCase().includes(q))).sort((a,b)=>a.secc.localeCompare(b.secc,'pt-BR')||a.agent.localeCompare(b.agent,'pt-BR'));
+ const status=(v)=>{if(latest.length<2)return 'SEM COMPARAÇÃO';const a=Number(v[latest[0]]||0),b=Number(v[latest[1]]||0);return b>a?'AUMENTOU':b<a?'DIMINUIU':'SEM ALTERAÇÃO'};
+ const headers=[{label:'Agente',get:x=>'<b>'+escapeHtml(x.agent)+'</b>'},{label:'Seccional',get:x=>escapeHtml(x.secc)}];
+ const cats=[['cnl','CNL QTD'],['sem','CNL SEM NORMALIZAÇÃO'],['ref','REFATURAMENTO']];for(const [cat,label] of cats){for(const c of comps)headers.push({label:label+' · '+c,get:x=>fmt(x.vals[cat][c]||0),num:true});headers.push({label:'Evolução '+label,get:x=>{const st=status(x.vals[cat]);return '<b style="color:'+(st==='AUMENTOU'?'#fca5a5':st==='DIMINUIU'?'#86efac':'#cbd5e1')+'">'+st+'</b>'}})}
+ $('evoMetrics').innerHTML=[['COMPETÊNCIAS REGISTRADAS',comps.length],['AGENTES NO HISTÓRICO',map.size],['ÚLTIMA COMPETÊNCIA',comps.at(-1)||'—'],['COMPARAÇÃO',latest.length===2?latest[0]+' × '+latest[1]:'Aguardando 2 meses']].map((x,i)=>`<div class="metric" style="--accent:${['#06b6d4','#3b82f6','#a855f7','#22c55e'][i]}"><div class="metric-label">${x[0]}</div><div class="metric-value" style="font-size:${i>1?'16px':'25px'}">${escapeHtml(String(x[1]))}</div></div>`).join('');
+ $('evoTable').innerHTML=table(filtered,headers)+(comps.length<2?'<p class="small">Importe ao menos duas competências para classificar aumento, redução ou sem alteração.</p>':'<p class="small">Comparação calculada somente entre '+latest[0]+' e '+latest[1]+'. Todas as competências anteriores continuam disponíveis nas colunas.</p>');
+}
+function exportEvolution(){const comps=[...new Set(EVOLUCAO.map(x=>normalizeCompetence(x.competencia)).filter(Boolean))].sort();const map=new Map();for(const x of EVOLUCAO){const k=keyName(x.seccional)+'|'+keyName(x.nome_agente);if(!map.has(k))map.set(k,{'NOME_AGENTE':x.nome_agente,'SECCIONAL':x.seccional});const cat=({cnl_qtd:'CNL QTD',refaturamento:'REFATURAMENTO',cnl_sem_normalizacao:'CNL SEM NORMALIZAÇÃO'})[x.tipo];if(cat)map.get(k)[cat+' '+normalizeCompetence(x.competencia)]=Number(x.quantidade||0)}downloadCSV('MAPEAMENTO_CENTRO_EVOLUCAO_MENSAL.csv',[...map.values()])}
+function clearAll(){if(!confirm('Apagar somente o cache local deste navegador? As bases compartilhadas no Supabase não serão excluídas.'))return;['cnl','ref','sem'].forEach(k=>{DB[k]=[];META[k]=null;localStorage.removeItem('mc_'+k)});render();if(supabase)loadAllBases();toast('Cache local removido. Os dados compartilhados permanecem no Supabase.')}
+function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',4500)}
+function downloadCSV(filename,rows){if(!rows.length){toast('Não há dados para exportar.');return}const keys=Object.keys(rows[0]);const csv=[keys.join(';'),...rows.map(r=>keys.map(k=>'"'+String(r[k]??'').replace(/"/g,'""')+'"').join(';'))].join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.download=filename;a.click();URL.revokeObjectURL(a.href)}
+function exportRanking(){const rows=baseAggregates().map((x,i)=>({'POSICAO':i+1,'NOME_AGENTE':x.agent,'SECCIONAL':x.secc,'CNL QTD':x.cnl,'CNL SEM NORMALIZACAO':x.sem,'REFATURAMENTO':x.ref,'TOTAL GERAL':x.total}));downloadCSV('MAPEAMENTO_CENTRO_RANKING_GERAL.csv',rows)}
+async function exportRecycle(){
+ const selected=offenderSelection();
+ const counters=new Map(),rows=[];
+ for(const x of selected){const secKey=keyName(x.secc),pos=(counters.get(secKey)||0)+1;counters.set(secKey,pos);
+  rows.push({'POSIÇÃO':pos,'NOME DO AGENTE':x.agent,'SECCIONAL':x.secc,'CNL QTD':x.cnl,'CNL SEM NORMALIZAÇÃO':x.sem,'REFATURAMENTO':x.ref,'TOTAL GERAL':x.total,'RECOMENDACAO':recommend(x)});
+ }
+ if(!rows.length){toast('Não há dados para exportar.');return}
+ if(!window.ExcelJS){toast('Não foi possível carregar o gerador de Excel. Verifique sua conexão e tente novamente.');return}
+ try{
+  const wb=new ExcelJS.Workbook();wb.creator='Monitoria Centro';wb.created=new Date();
+  const ws=wb.addWorksheet('Plano de Reciclagem',{views:[{state:'frozen',ySplit:1}]});
+  const headers=Object.keys(rows[0]);
+  ws.addTable({name:'TabelaReciclagem',ref:'A1',headerRow:true,style:{theme:'TableStyleMedium2',showRowStripes:true},columns:headers.map(name=>({name,filterButton:true})),rows:rows.map(r=>headers.map(h=>r[h]))});
+  ws.columns=[{width:12},{width:30},{width:22},{width:14},{width:25},{width:16},{width:16},{width:85}];
+  ws.getRow(1).height=26;
+  ws.getRow(1).eachCell(c=>{c.font={bold:true,color:{argb:'FFFFFFFF'},name:'Lexend',size:10};c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF17243A'}};c.alignment={vertical:'middle',horizontal:'center',wrapText:true}});
+  for(let r=2;r<=ws.rowCount;r++){ws.getRow(r).height=34;ws.getRow(r).eachCell((c,i)=>{c.font={name:'Lexend',size:10,color:{argb:'FF172033'}};c.alignment={vertical:'middle',wrapText:i===8,horizontal:i>=4&&i<=7?'right':'left'};if(i>=4&&i<=7)c.numFmt='#,##0'});}
+  const buffer=await wb.xlsx.writeBuffer();const blob=new Blob([buffer],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='MONITORIA_CENTRO_PLANO_RECICLAGEM_V1.0.11.xlsx';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
+  toast('Planilha Excel de reciclagem exportada com tabela e recomendações consolidadas.');
+ }catch(e){toast('Erro ao gerar Excel: '+e.message)}
+}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>{const target=$('page-'+b.dataset.page);if(!target)return;if(b.dataset.page==='importacao'&&!isAdmin){toast('A importação é exclusiva do administrador.');return}document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));target.classList.add('active');if(b.dataset.page==='evolucao')loadEvolution();if(innerWidth<700)$('sidebar').classList.remove('mobileopen')}));
+$('toggle').onclick=()=>{const s=$('sidebar');if(innerWidth<700)s.classList.toggle('mobileopen');else s.classList.toggle('closed')};
+$('fileCnl').onchange=e=>importFile(e.target.files[0],'cnl');$('fileRef').onchange=e=>importFile(e.target.files[0],'ref');$('fileSem').onchange=e=>importFile(e.target.files[0],'sem');
+['dashSearch','dashSec','rankSearch','rankSec','recycleSec','recycleSearch','detailCat','detailSec','detailSearch','trainedSec','trainedStatus','trainedSearch'].forEach(id=>{const el=$(id);if(el){el.addEventListener('input',render);el.addEventListener('change',render)}});['evoSec','evoSearch'].forEach(id=>{const el=$(id);if(el){el.addEventListener('input',renderEvolution);el.addEventListener('change',renderEvolution)}});
+$('adminLoginBtn').onclick=()=>{$('authError').textContent='';$('adminModal').classList.add('open');$('adminUsername').focus()};
+$('cancelAdminLogin').onclick=()=>{$('adminModal').classList.remove('open')};
+$('adminModal').addEventListener('click',e=>{if(e.target===$('adminModal'))$('adminModal').classList.remove('open')});
+$('adminLoginForm').addEventListener('submit',async e=>{
+ e.preventDefault();if(!supabase){$('authError').textContent='Não foi possível carregar o Supabase. Verifique sua conexão e atualize a página.';return}const username=$('adminUsername').value.trim(),password=$('adminPassword').value;
+ if(username!==ADMIN_LOGIN){$('authError').textContent='Login administrativo inválido.';return}
+ $('submitAdminLogin').disabled=true;$('submitAdminLogin').textContent='Validando...';
+ try{
+  const {data,error}=await supabase.auth.signInWithPassword({email:ADMIN_EMAIL,password});
+  if(error)throw error;
+  const {data:allowed,error:roleError}=await supabase.rpc('is_mapeamento_admin');
+  if(roleError)throw roleError;
+  if(allowed!==true){await supabase.auth.signOut();throw new Error('Esta conta ainda não está cadastrada como administradora na tabela mapeamento_admins.')}
+  currentSession=data.session;isAdmin=true;document.body.classList.add('is-admin');$('adminModal').classList.remove('open');$('adminPassword').value='';$('adminLoginBtn').textContent='ADMIN: ricardobarboza';$('connectionStatus').textContent='● SUPABASE · ADMIN';
+  await loadTrained();await loadAllBases();render();toast('Acesso administrativo autorizado.');
+ }catch(err){$('authError').textContent=err.message||'Falha na autenticação.'}
+ finally{$('submitAdminLogin').disabled=false;$('submitAdminLogin').textContent='Entrar'}
+});
+$('adminLogoutBtn').onclick=async()=>{if(supabase)await supabase.auth.signOut();currentSession=null;isAdmin=false;document.body.classList.remove('is-admin');$('adminLoginBtn').textContent='Entrar como administrador';$('connectionStatus').textContent='● SUPABASE · CONSULTA';if($('page-importacao').classList.contains('active')){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$('page-dashboard').classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page==='dashboard'))}toast('Sessão administrativa encerrada.')};
+async function fetchAllRows(tableName){
+ const all=[];let from=0,step=1000;
+ while(true){const {data,error}=await supabase.from(tableName).select('id,seccional,nome_agente,instalacao,apontamento,competencia,dados,importado_em').order('id',{ascending:true}).range(from,from+step-1);if(error)throw error;all.push(...(data||[]));if(!data||data.length<step)break;from+=step}
+ return all;
+}
+async function loadAllBases(){
+ if(!supabase){$('connectionStatus').textContent='● MODO LOCAL';$('lastUpdate').textContent='Supabase indisponível — exibindo cache local';render();return}
+ if(remoteLoading)return;remoteLoading=true;$('lastUpdate').textContent='Atualizando dados compartilhados...';
+ try{
+  const [cnl,ref,sem]=await Promise.all([fetchAllRows('cnl_qtd'),fetchAllRows('refaturamento'),fetchAllRows('cnl_sem_normalizacao')]);
+  const mapRows=(rows,cat)=>rows.map(r=>parseRow({...((r.dados&&typeof r.dados==='object')?r.dados:{}),SECCIONAL:r.seccional,NOME_AGENTE:r.nome_agente,INSTALACAO:r.instalacao,APONTAMENTO:r.apontamento||'',COMPETENCIA:r.competencia||''},cat));
+  DB.cnl=mapRows(cnl,'cnl');DB.ref=mapRows(ref,'ref');DB.sem=mapRows(sem,'sem');
+  const latest=arr=>arr.length?arr.reduce((a,b)=>new Date(a.importado_em)>new Date(b.importado_em)?a:b).importado_em:null;
+  [['cnl',cnl],['ref',ref],['sem',sem]].forEach(([k,arr])=>{const t=latest(arr);META[k]=arr.length?{name:'Supabase · base compartilhada',date:t?new Date(t).toLocaleString('pt-BR'):'Importada'}:null});
+  try{[['cnl',DB.cnl],['ref',DB.ref],['sem',DB.sem]].forEach(([k,rows])=>localStorage.setItem('mc_'+k,JSON.stringify({rows,meta:META[k]})))}catch(cacheError){console.warn('Cache local não atualizado:',cacheError)}
+  $('connectionStatus').textContent=isAdmin?'● SUPABASE · ADMIN':'● SUPABASE · CONSULTA';
+  render();
+ }catch(e){$('connectionStatus').textContent='● ERRO DE CONEXÃO';$('lastUpdate').textContent='Falha ao consultar Supabase';toast('Não foi possível carregar as bases: '+e.message)}
+ finally{remoteLoading=false}
+}
+async function loadTrained(){
+ const {data,error}=await supabase.from('agentes_capacitados').select('seccional,nome_agente,data_reciclagem,primeira_entrada');
+ if(error){toast('Não foi possível carregar Agentes Capacitados: '+error.message);return}
+ (data||[]).forEach(x=>{const k=trainedKey(x.seccional,x.nome_agente),old=TRAINED[k]||{};TRAINED[k]={...old,secc:x.seccional,agent:x.nome_agente,dataReciclagem:x.data_reciclagem||old.dataReciclagem||'',primeiraEntrada:x.primeira_entrada||old.primeiraEntrada||new Date().toISOString()}});try{localStorage.setItem(TRAINED_KEY,JSON.stringify(TRAINED))}catch(e){}renderTrained();
+}
+function restoreLocalCache(){
+ ['cnl','ref','sem'].forEach(k=>{try{const saved=localStorage.getItem('mc_'+k);if(saved){const obj=JSON.parse(saved);DB[k]=Array.isArray(obj.rows)?obj.rows:[];META[k]=obj.meta||null}}catch(e){console.warn('Cache local inválido para '+k,e)}});
+ try{const saved=localStorage.getItem(TRAINED_KEY);if(saved)TRAINED={...TRAINED,...JSON.parse(saved)}}catch(e){}
+}
+function initApplication(){
+ restoreLocalCache();render();
+ if(!supabase){$('connectionStatus').textContent='● MODO LOCAL';$('lastUpdate').textContent='Modo local ativo — aguardando integração Supabase';return}
+ supabase.auth.getSession().then(async({data,error})=>{
+  if(error)console.warn(error);currentSession=data?.session||null;
+  if(currentSession){const {data:allowed,error:roleError}=await supabase.rpc('is_mapeamento_admin');if(!roleError&&allowed===true){isAdmin=true;document.body.classList.add('is-admin');$('adminLoginBtn').textContent='ADMIN: ricardobarboza';$('connectionStatus').textContent='● SUPABASE · ADMIN';await loadTrained()}else{await supabase.auth.signOut();currentSession=null}}
+  await loadAllBases();await loadTrained();await loadEvolution();
+ }).catch(e=>{console.error(e);$('connectionStatus').textContent='● ERRO DE CONEXÃO';$('lastUpdate').textContent='Falha ao consultar Supabase; mantendo cache local';toast('Erro ao iniciar conexão com Supabase: '+e.message)});
+ try{supabase.channel('mapeamento-centro-live').on('postgres_changes',{event:'*',schema:'public',table:'cnl_qtd'},()=>loadAllBases()).on('postgres_changes',{event:'*',schema:'public',table:'refaturamento'},()=>loadAllBases()).on('postgres_changes',{event:'*',schema:'public',table:'cnl_sem_normalizacao'},()=>loadAllBases()).on('postgres_changes',{event:'*',schema:'public',table:'agentes_capacitados'},()=>loadTrained()).on('postgres_changes',{event:'*',schema:'public',table:'evolucao_mensal_agentes'},()=>loadEvolution()).subscribe()}catch(channelError){console.warn('Realtime indisponível:',channelError)}
+}
+// A aplicação inicia imediatamente, mesmo que os CDNs estejam indisponíveis.
+initApplication();
+const supabaseLibrary=document.querySelector('script[data-lib="supabase"]');
+function activateSupabaseWhenReady(){
+ if(!createSupabaseClient())return;
+ $('connectionStatus').textContent='● SUPABASE · CONECTANDO';
+ $('lastUpdate').textContent='Biblioteca carregada — conectando ao Supabase...';
+ initApplication();
+}
+if(window.supabase&&typeof window.supabase.createClient==='function'){
+ activateSupabaseWhenReady();
+}else if(supabaseLibrary){
+ supabaseLibrary.addEventListener('load',activateSupabaseWhenReady,{once:true});
+ supabaseLibrary.addEventListener('error',()=>{
+  $('connectionStatus').textContent='● MODO LOCAL';
+  $('lastUpdate').textContent='CDN do Supabase indisponível — navegação local ativa';
+  console.warn('Não foi possível carregar a biblioteca do Supabase. A interface permanece em modo local.');
+ },{once:true});
+}
+</script>
+</body></html>
